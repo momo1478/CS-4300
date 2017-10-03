@@ -1,0 +1,35 @@
+function KB_out = CS4300_Tell(KB,sentence)
+% CS4300_Tell - Tell function for logic KB
+% On input:
+%   KB (KB struct): Knowledge base (CNF)
+%       (k).clauses (1xp vector): disjunction clause
+%   sentence (KB struct): query theorem (CNF)
+%       (k).clauses (1xq vector): disjunction
+% On output:
+%   KB_out (KB struct): revised KB
+% Call:
+%   KB = CS4300_Tell([],[1]);
+% Author:
+%   Monish Gupta and Eric Waugh
+%   U1008121 and U0947296
+%   Fall 2017
+
+if isempty(KB)
+    if ~isstruct(sentence)
+            KB(1).clauses = sentence;
+        return;
+    else
+        KB_out = KB;
+    end
+end
+
+KB_out = KB;
+
+if ~isstruct(sentence)
+    KB_out(length(KB_out) + 1).clauses = sentence;
+    return;
+end
+
+for i = 1 : length(sentence)
+    KB_out(length(KB_out) + 1).clauses = sentence(i).clauses;
+end
