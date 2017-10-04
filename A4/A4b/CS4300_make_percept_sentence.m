@@ -50,7 +50,7 @@ else
     sentence(3).clauses = location + glitter_offset;
 end
 
-sentence(4).clauses = [];
-sentence(5).clauses = [];
+%sentence(4).clauses = [];
+%sentence(5).clauses = [];
 
 end
