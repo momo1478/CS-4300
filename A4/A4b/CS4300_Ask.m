@@ -19,6 +19,4 @@ function b = CS4300_Ask(KB,sentence)
 
  temp = CS4300_RTP(KB, sentence, 1:80);
  
- b = isempty(temp);
- 
- 
+ b = CS4300_empty_clause(temp);

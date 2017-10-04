@@ -10,3 +10,30 @@ function action = CS4300_hybrid_agent(percept)
 %   Monish Gupta and Eric Waugh
 %   U1008121 and U0947296
 %   Fall 2017
+
+persistent KB;
+persistent plan;
+persistent safe;
+persistent unvisited;
+
+persistent state;
+
+if isempty(KB)
+   [,KB,] = CS4300_BR_gen_KB();
+end
+
+if isempty(state)
+    state = [1,1,0];
+end
+
+if isempty(plan)
+   plan = []; 
+end
+
+if isempty(unvisited)
+    unvisited = 2:16;
+end
+
+if isempty(safe)
+   safe = 1; 
+end
