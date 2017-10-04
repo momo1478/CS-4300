@@ -17,3 +17,5 @@ function b = CS4300_Ask(KB,sentence)
 %   U1008121 and U0947296
 %   Fall 2017
 
+
+end

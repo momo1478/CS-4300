@@ -14,8 +14,6 @@ function KB_out = CS4300_Tell(KB,sentence)
 %   U1008121 and U0947296
 %   Fall 2017
 
-
-
 if isempty(KB)
     if ~isstruct(sentence)
         KB_out(1).clauses = sentence;
@@ -33,3 +31,5 @@ if ~isstruct(sentence)
 end
 
 KB_out = CS4300_clause_union(KB,sentence);
+
+end
