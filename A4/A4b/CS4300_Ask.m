@@ -17,3 +17,8 @@ function b = CS4300_Ask(KB,sentence)
 %   U1008121 and U0947296
 %   Fall 2017
 
+ temp = CS4300_RTP(KB, sentence, 1:80);
+ 
+ b = isempty(temp);
+ 
+ 
