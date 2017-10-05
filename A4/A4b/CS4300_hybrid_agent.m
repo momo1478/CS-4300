@@ -98,7 +98,7 @@ end
 
 %
 if isempty(plan)
-    %set plan = Plan_Route(current, [1,1], safe) + [Climb]; 
+    plan = [CS4300_Plan_Route(state,[1,1],safe_board),6];
 end
 action = plan(1);
 plan = plan(2:end);
