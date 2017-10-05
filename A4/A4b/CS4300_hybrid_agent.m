@@ -74,7 +74,7 @@ if CS4300_Ask(KB, g)
 end
 
 if isempty(plan)
-    %set plan = Plan_Route(state, intersect(unvisited,safe), safe);
+    plan = Plan_Route(state, CS4300_Coor_To_XYList( intersect(unvisited,safe) ), safe);
 end
 
 possible_wumpus = [];
@@ -93,7 +93,7 @@ end
 %have to task a rist
 if isempty(plan)
     not_unsafe = setdiff(1:16,safe);
-    %set plan = Plan_Route(state, intersect(unvisited,not_unsafe), safe);
+    plan = Plan_Route(state, CS4300_Coor_To_XYList( intersect(unvisited,not_unsafe) ), safe);
 end
 
 %
