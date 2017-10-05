@@ -48,7 +48,7 @@ if isempty(have_arrow)
 end
 
 if isempty(safe_board)
-   safe_board = -ones(4, 4);
+   safe_board = ones(4, 4);
 end
 
 cell_state = (state(1) - 1) * 4 + state(2);
@@ -70,7 +70,7 @@ end
 %checking for glitter against knowledge base at current spot
 g.clauses(1) = cell_state + glitter_offset;
 if CS4300_Ask(KB, g)
-
+    plan = [4,CS4300_Plan_Route(state,[1,1], safe_board),6];
 end
 
 if isempty(plan)
