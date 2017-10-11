@@ -70,7 +70,7 @@ end
 
 if phase == 2
     if isempty(solution)
-        [so,no] = CS4300_Wumpus_A_star(abs(pboard),state,[1,1,0],'CS4300_Heuristic');
+        [so,no] = CS4300_Wumpus_A_star(abs(pboard),state,[1,1,0],'CS4300_A_star_Man');
         solution = [4];
         for i = 2:size(so,1) %Start @ 2 to Skip '0' action in solution.
            solution = [solution,so(i,4)];
