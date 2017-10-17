@@ -11,42 +11,18 @@ function action = CS4300_hybrid_agent(percept)
 %   U1008121 and U0947296
 %   Fall 2017
 
-persistent KB;
-persistent plan;
-persistent safe;
-persistent unvisited;
-persistent state;
-persistent have_arrow;
-persistent safe_board;
+persistent KB plan safe unvisited state have_arrow safe_board;
 
 pit_offset = 32;
 wumpus_offset = 64;
 
 if isempty(KB)
    [KB_string,KB,vars] = CS4300_BR_gen_KB();
-end
-
-if isempty(state)
-    state = [1,1,0];
-end
-
-if isempty(plan)
-   plan = []; 
-end
-
-if isempty(unvisited)
-    unvisited = 2:16;
-end
-
-if isempty(safe)
-   safe = 1; 
-end
-
-if isempty(have_arrow)
-   have_arrow = 1; 
-end
-
-if isempty(safe_board)
+   state = [1,1,0];
+   plan = [];
+   unvisited = 2:16;
+   safe = 1;
+   have_arrow = 1;
    safe_board = ones(4, 4);
 end
 
