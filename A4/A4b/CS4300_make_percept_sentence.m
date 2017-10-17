@@ -25,7 +25,7 @@ glitter_offset = 16;
 pit_offset = 32;
 stench_offset = 48;
 wumpus_offset = 64;
-location = (x - 1) * 4 + y;
+location = (y - 1) * 4 + x;
 
 sentence = [];
 
