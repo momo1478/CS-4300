@@ -19,7 +19,6 @@ persistent state;
 persistent have_arrow;
 persistent safe_board;
 
-glitter_offset = 16;
 pit_offset = 32;
 wumpus_offset = 64;
 
@@ -93,8 +92,9 @@ possible_wumpus = [];
 if isempty(plan) && have_arrow
     for i = 1:16
         if ~ismember(i,safe)
-            w(1).clauses = -(i + wumpus_offset);
-            if ~CS4300_Ask(KB, w) 
+            not_wumpus(1).clauses = -(i + wumpus_offset);
+            wumpus(1).clauses = i + wumpus_offset;
+            if ~CS4300_Ask(KB, not_wumpus) && CS4300_Ask(KB, wumpus)
                 possible_wumpus = [possible_wumpus,i];
             end
         end
