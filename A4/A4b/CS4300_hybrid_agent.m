@@ -19,7 +19,6 @@ persistent state;
 persistent have_arrow;
 persistent safe_board;
 
-glitter_offset = 16;
 pit_offset = 32;
 wumpus_offset = 64;
 
@@ -57,13 +56,20 @@ safe_board(4 - state(2) + 1, state(1)) = 0;
 KB = CS4300_Tell(KB, CS4300_make_percept_sentence(...
     percept,state(1),state(2)));
 
-%% ASK SAFE SPACES
-for i = 1:16
-    if ~ismember(i,safe)
-        a.clauses(1) = -(i + pit_offset); b(1).clauses = -(i + wumpus_offset);
-        if CS4300_Ask(KB, a) && CS4300_Ask(KB, b)
-            safe = [safe,i];
-            safe_board(4 - floor((i - 1)/4), rem(i + 1,4) + 1) = 0;
+%% ASK SAFE SPACES TO 4 ADJACENT CELLS
+neighbors = [cell_state + 4, cell_state - 4, cell_state + 1, cell_state - 1];
+for i = 1:4
+    if ~ismember(neighbors(i),safe) && neighbors(i) > 0 && neighbors(i) < 16
+        not_pit(1).clauses = -(neighbors(i) + pit_offset); 
+        not_wumpus(1).clauses = -(neighbors(i) + wumpus_offset);
+        
+        pit(1).clauses = neighbors(i) + pit_offset; 
+        wumpus(1).clauses = neighbors(i) + wumpus_offset;
+        if CS4300_Ask(KB, not_pit) && CS4300_Ask(KB, not_wumpus) && ...
+                ~CS4300_Ask(KB, pit) && ~CS4300_Ask(KB, wumpus)
+            safe = [safe,neighbors(i)];
+            safe_board(4 - floor((neighbors(i) - 1)/4),...
+                rem(neighbors(i) + 1,4) + 1) = 0;
         end
     end
 end
@@ -86,8 +92,9 @@ possible_wumpus = [];
 if isempty(plan) && have_arrow
     for i = 1:16
         if ~ismember(i,safe)
-            w(1).clauses = -(i + wumpus_offset);
-            if ~CS4300_Ask(KB, w) 
+            not_wumpus(1).clauses = -(i + wumpus_offset);
+            wumpus(1).clauses = i + wumpus_offset;
+            if ~CS4300_Ask(KB, not_wumpus) && CS4300_Ask(KB, wumpus)
                 possible_wumpus = [possible_wumpus,i];
             end
         end
