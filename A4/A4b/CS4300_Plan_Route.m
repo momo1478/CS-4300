@@ -17,11 +17,9 @@ function plan = CS4300_Plan_Route(start_state, dests, safe_spots)
 
 %[so,no] = CS4300_Wumpus_A_star([0,0,0,0;0,2,1,3;0,0,0,1;0,0,0,0],...
 %       [1,1,0],[2,2,1],'CS4300_A_star_Man')
-persistent out_plan;
 
-if isempty(out_plan)
-   out_plan = []; 
-end
+out_plan = []; 
+
 
 last_state = start_state;
 
@@ -34,7 +32,10 @@ for i = 1 : size(dests,1)
             out_plan = [out_plan,so(j,4)];
        end
    end
-   last_state = so(size(so,1),1:3);
+   
+   if ~isempty(so)
+        last_state = so(size(so,1),1:3);
+   end
 end
 
 plan = out_plan;

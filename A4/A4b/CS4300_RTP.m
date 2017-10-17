@@ -38,6 +38,8 @@ function Sip = CS4300_RTP(sentences,thm,vars)
 %     UU
 %     Summer 2014
 %
+MAX_CLAUSES = 2000;
+
 
 num_sentences = length(sentences);
 len_thm = length(thm(1).clauses);
@@ -55,8 +57,13 @@ for i = 1:n
     Ui = CS4300_resolvent_clauses(Ti,vars(i));
     if CS4300_empty_clause(Ui)
         Sip = [];
+        Sip(1).clauses = []; %we changed this from Sip = [];
         return
     end
     Sipn = CS4300_update_S(Sip,Ti,Ui);
+    if(length(Sipn) > MAX_CLAUSES)
+        Sip = Sipn;
+        return
+    end
 end
 Sip = Sipn;
