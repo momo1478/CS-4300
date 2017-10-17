@@ -57,7 +57,7 @@ safe_board(4 - state(2) + 1, state(1)) = 0;
 KB = CS4300_Tell(KB, CS4300_make_percept_sentence(...
     percept,state(1),state(2)));
 
-%%
+%% ASK SAFE SPACES
 for i = 1:16
     if ~ismember(i,safe)
         a.clauses(1) = -(i + pit_offset); b(1).clauses = -(i + wumpus_offset);
@@ -75,13 +75,13 @@ if percept(3) == 1
 end
 %%
 
-%%
+%% VISIT ALL SAFE SPACES
 if isempty(plan)
     plan = Plan_Route(state, CS4300_Coor_To_XYList( intersect(unvisited,safe) ), safe);
 end
 %%
 
-%%
+%% FIND POSSIBLE WUMPUS PLACES + SHOOT WUMPUS
 possible_wumpus = [];
 if isempty(plan) && have_arrow
     for i = 1:16
@@ -96,21 +96,20 @@ if isempty(plan) && have_arrow
 end
 %%
 
-%% have to task a risk
+%% TAKE A RISK ON SPACES THAT ARE NOT_UNSAFE
 if isempty(plan)
     not_unsafe = setdiff(1:16,safe);
     plan = Plan_Route(state, CS4300_Coor_To_XYList( intersect(unvisited,not_unsafe) ), safe);
 end
 %%
 
-%%
+%% CHICKEN OUT AND CLIMB OUT OF BOARD
 if isempty(plan)
     plan = [CS4300_Plan_Route(state,[1,1],safe_board),6];
 end
 %%
 action = plan(1);
 plan = plan(2:end);
-%CS4300_Tell(KB, Make_Action_Sentence(action));
 state = CS4300_Wumpus_transition(state,action,safe_board);
 
 end
