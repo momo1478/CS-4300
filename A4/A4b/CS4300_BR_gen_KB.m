@@ -99,8 +99,8 @@ for i = 1:16 %only 1 gold on the board rule set
         end
     end
 end
-KBi(length(KBi) + 1).clauses = sort(gold_rule);
-KB(length(KB) + 1).clauses = gold_string_rule;
+%%%%%%KBi(length(KBi) + 1).clauses = sort(gold_rule);
+%%%%%%KB(length(KB) + 1).clauses = gold_string_rule;
 
 wumpus_rule = [];
 wumpus_string_rule = [];
@@ -116,8 +116,8 @@ for i = 1:16 %only 1 wumpus on the board rule set
         end
     end
 end
-KBi(length(KBi) + 1).clauses = sort(wumpus_rule);
-KB(length(KB) + 1).clauses = wumpus_string_rule;
+%%%%%%%KBi(length(KBi) + 1).clauses = sort(wumpus_rule);
+%%%%%%%KB(length(KB) + 1).clauses = wumpus_string_rule;
 
 for i = 1:16 %no gold on a pit
     new_rule = [-(i + glitter_offset), -(i + pit_offset)];

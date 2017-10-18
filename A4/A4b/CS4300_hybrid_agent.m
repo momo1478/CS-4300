@@ -22,7 +22,7 @@ if isempty(KB)
    state = [1,1,0];
    plan = [];
    unvisited = 2:16;
-   safe = 1;
+   safe = [];
    have_arrow = 1;
    safe_board = ones(4, 4);
    have_gold = 0;
@@ -50,29 +50,41 @@ end
 
 %% ASK SAFE SPACES TO 4 ADJACENT CELLS
 neighbors = [cell_state + 4, cell_state - 4, cell_state + 1, cell_state - 1];
-for i = 1:4
-    if ~ismember(neighbors(i),safe) && neighbors(i) > 0 && neighbors(i) < 16
-        not_pit(1).clauses = -(neighbors(i) + pit_offset); 
-        not_wumpus(1).clauses = -(neighbors(i) + wumpus_offset);
-        
-        pit(1).clauses = neighbors(i) + pit_offset; 
-        wumpus(1).clauses = neighbors(i) + wumpus_offset;
-        
-        not_pit_result = CS4300_Ask(KB, not_pit);
-        if not_pit_result == 1
-            KB = CS4300_Tell(KB, not_pit);
-        end
-        
-        not_wumpus_result = CS4300_Ask(KB, not_wumpus);
-        if not_wumpus_result == 1
-            KB = CS4300_Tell(KB, not_wumpus);
-        end
-        
-        if not_pit_result && not_wumpus_result && ...
-                ~CS4300_Ask(KB, pit) && ~CS4300_Ask(KB, wumpus)
+
+if percept(1) == 0 && percept(2) == 0
+    for i = 1:length(neighbors)
+        if neighbors(i) > 0 && ~ismember(neighbors(i),safe)
             safe = [safe,neighbors(i)];
             safe_board(4 - floor((neighbors(i) - 1)/4),...
-                rem(neighbors(i) - 1,4) + 1) = 0;
+                    rem(neighbors(i) - 1,4) + 1) = 0;
+        end
+    end
+else
+    neighbors = [cell_state + 4, cell_state - 4, cell_state + 1, cell_state - 1];
+    for i = 1:4
+        if ~ismember(neighbors(i),safe) && neighbors(i) > 0 && neighbors(i) < 16
+            not_pit(1).clauses = -(neighbors(i) + pit_offset); 
+            not_wumpus(1).clauses = -(neighbors(i) + wumpus_offset);
+
+            pit(1).clauses = neighbors(i) + pit_offset; 
+            wumpus(1).clauses = neighbors(i) + wumpus_offset;
+
+            not_pit_result = CS4300_Ask(KB, not_pit);
+            if not_pit_result == 1
+                KB = CS4300_Tell(KB, not_pit);
+            end
+
+            not_wumpus_result = CS4300_Ask(KB, not_wumpus);
+            if not_wumpus_result == 1
+                KB = CS4300_Tell(KB, not_wumpus);
+            end
+
+            if not_pit_result && not_wumpus_result && ...
+                    ~CS4300_Ask(KB, pit) && ~CS4300_Ask(KB, wumpus)
+                safe = [safe,neighbors(i)];
+                safe_board(4 - floor((neighbors(i) - 1)/4),...
+                    rem(neighbors(i) - 1,4) + 1) = 0;
+            end
         end
     end
 end
