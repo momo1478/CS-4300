@@ -3,7 +3,7 @@ function plan = CS4300_Plan_Shot( safe, board, state, Wx, Wy )
 %                    a direction toward the Wumpus.
 % On input:
 %   safe (1xn int vector) : vector of speces that are safe.
-%   board (nxn matrix) :    game board
+%   board (nxn matrix) :    safe board
 %   state (1x3 vector) :    vector representing agent state
 %   Wx    (int)        :    Wumpus X pos to shoot at
 %   Wy    (int)        :    Wumpus Y pos to shoot at
@@ -18,7 +18,8 @@ function plan = CS4300_Plan_Shot( safe, board, state, Wx, Wy )
 
 S = CS4300_find_safe_row_col_with_Wumpus(safe,board,Wx,Wy);
 % S == [sx,sy,0]
-[so,no] = CS4300_Wumpus_A_star(abs(board),[state(1),state(2),state(3)],S);
+[so,no] = CS4300_Wumpus_A_star(abs(board),[state(1),state(2),state(3)],...
+    S,'CS4300_A_star_Man');
 turn = CS4300_turn_plan(state(1), state(2), state(3), so, Wx, Wy);
 plan = [so(2:end,end),turn,SHOOT];
 
