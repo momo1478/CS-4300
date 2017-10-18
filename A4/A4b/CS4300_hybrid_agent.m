@@ -44,10 +44,6 @@ end
 KB = CS4300_Tell(KB, CS4300_make_percept_sentence(...
     percept,state(1),state(2)));
 
-if state(1) == 2 && state(2) == 2
-    x = 5;
-end
-
 %% ASK SAFE SPACES TO 4 ADJACENT CELLS
 neighbors = [cell_state + 4, cell_state - 4, cell_state + 1, cell_state - 1];
     for i = 1:4
@@ -104,11 +100,12 @@ end
 % %             not_wumpus(1).clauses = -(i + wumpus_offset);
 % %             wumpus(1).clauses = i + wumpus_offset;
 % %             if ~CS4300_Ask(KB, not_wumpus) && CS4300_Ask(KB, wumpus)
-% %                 possible_wumpus = [possible_wumpus,i];
+% %                 possible_wumpus = i
 % %             end
 % %         end
 % %     end
 % %     %plan = Plan_Shot(state, possible_wumpus, safe);
+% %     have_arrow = 0;
 % % end
 %%
 
