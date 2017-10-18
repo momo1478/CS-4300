@@ -19,7 +19,7 @@ function plan = CS4300_Plan_Shot( safe, board, state, Wx, Wy )
 S = CS4300_find_safe_row_col_with_Wumpus(safe,board,Wx,Wy);
 % S == [sx,sy,0]
 [so,no] = CS4300_Wumpus_A_star(abs(board),[state(1),state(2),state(3)],S);
-turn = CS4300_turn_plan(state(1), state(2), state(3), so, Wx, Wy);
+turn = CS4300_turn_plan(S , so);
 plan = [so(2:end,end),turn,SHOOT];
 
 end
