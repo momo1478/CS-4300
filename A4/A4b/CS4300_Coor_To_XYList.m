@@ -1,4 +1,4 @@
-function xylist = CS4300_Coor_To_XYList( coords )
+function xylist = CS4300_Coor_To_XYList(coords)
 % CS4300_Coor_To_XYList - Converts a cell number list to a matrix of
 % coordinates (Wumpus World coordinates) (y first, x second)
 % On input:
@@ -16,6 +16,6 @@ xylist = [];
 for i = 1:length(coords)
     y = floor(( coords(i) - 1 )/4) + 1;
     x = rem( coords(i) - 1,4 ) + 1;
-    xylist = [xylist; [y,x] ];
+    xylist = [xylist; [x,y] ];
 end
 
