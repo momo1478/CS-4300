@@ -165,7 +165,7 @@ end
 not_unsafe = setdiff(1:16,safe);
 if isempty(plan)
     plan = CS4300_Plan_Route(state,...
-        CS4300_Coor_To_XYList(intersect(unvisited,not_unsafe)),safe_board);
+        CS4300_Coor_To_XYList(intersect(unvisited,not_unsafe)),zeros(4,4));
 end
 %%
 
