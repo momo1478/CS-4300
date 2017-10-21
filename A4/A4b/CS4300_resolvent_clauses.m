@@ -19,6 +19,8 @@ function Ui = CS4300_resolvent_clauses(Ti,P)
 len_Ti = length(Ti);
 sorted_clauses = zeros(len_Ti,2);
 
+MAX_CLAUSES = 10000;
+
 for ind = 1:len_Ti
     pind = find(Ti(ind).clauses==P);
     if length(pind)>1
@@ -55,6 +57,11 @@ for p = 1:num_pos
         n_index = sorted_clauses(indexes_neg(n),2);
         Ui(len_Ui).clauses = ...
             [p_clause(1:p_index-1),p_clause(p_index+1:end), ...
-             n_clause(1:n_index-1),n_clause(n_index+1:end)];
+             n_clause(1:n_index-1),n_clause(n_index+1:end)];        
+
+    end
+    if len_Ui > MAX_CLAUSES
+        Ui = [];
+        return
     end
 end
