@@ -28,7 +28,7 @@ function [scores,trace] = CS4300_WW3(max_steps,f_name)
 % agent.climbed = 0; % climbed out
 
 traces = [];
-% 
+
 % clear(f_name);
 % 
 % board1 = [0,0,0,3;...
@@ -39,9 +39,9 @@ traces = [];
 % scores(1).board = board1;
 % scores(1).score = score;
 % scores(1).trace = trace;
-% 
+
 % clear(f_name);
-%
+% 
 % board2 = [0,0,0,1;...
 %           3,2,1,0;...
 %           0,0,0,0;...
@@ -51,42 +51,22 @@ traces = [];
 % scores(2).score = score;
 % scores(2).trace = trace;
 %  
-%   
-% actions = [];
-% actions = [actions, scores(2).trace.action];
 %  
 % clear(f_name);
 
 
-% board3 = [0,0,0,0;...
-%           0,0,0,0;...
-%           3,2,0,0;...
-%           0,1,0,0];
-% [score,trace] = CS4300_WW1(max_steps,f_name,board3);
-% scores(3).board = board3;
-% scores(3).score = score;
-% scores(3).trace = trace;
-% 
-% clear(f_name);
+board3 = [0,0,0,0;...
+          0,0,0,0;...
+          3,2,0,0;...
+          0,1,0,0];
+[score,trace] = CS4300_WW1(max_steps,f_name,board3);
+scores(3).board = board3;
+scores(3).score = score;
+scores(3).trace = trace;
 
-% board3 = [0,0,0,0;...
-%           1,1,1,1;...
-%           0,3,2,0;...
-%           0,0,0,0];
-% [score,trace] = CS4300_WW1(max_steps,f_name,board3);
-% scores(3).board = board3;
-% scores(3).score = score;
-% scores(3).trace = trace;
-% 
-% clear(f_name);
-
-board4 = [0,0,0,0;...
-          1,0,0,1;...
-          0,3,2,0;...
-          0,0,0,0];
-[score,trace] = CS4300_WW1(max_steps,f_name,board4);
-scores(4).board = board4;
-scores(4).score = score;
-scores(4).trace = trace;
+actions = [];
+actions = [actions, scores(3).trace.action];
 
 clear(f_name);
+
+

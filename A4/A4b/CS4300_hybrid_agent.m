@@ -142,9 +142,6 @@ end
 if isempty(plan) && have_arrow
     for i = 1:16
         if ~ismember(i,safe)
-            if i == 6
-                x = 5;
-            end
             Checky = 5 - (floor((i - 1)/4) + 1);
             Checkx = rem(i - 1,4) + 1;
             
