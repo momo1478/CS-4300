@@ -26,6 +26,8 @@ function [scores,trace] = CS4300_WW3(max_steps,f_name)
 % agent.dir = 0;  % facing right
 % agent.succeed = 0;  % has gold and climbed out
 % agent.climbed = 0; % climbed out
+
+traces = [];
 % 
 % clear(f_name);
 % 
@@ -39,7 +41,7 @@ function [scores,trace] = CS4300_WW3(max_steps,f_name)
 % scores(1).trace = trace;
 % 
 % clear(f_name);
-% 
+%
 % board2 = [0,0,0,1;...
 %           3,2,1,0;...
 %           0,0,0,0;...
@@ -49,12 +51,28 @@ function [scores,trace] = CS4300_WW3(max_steps,f_name)
 % scores(2).score = score;
 % scores(2).trace = trace;
 %  
-clear(f_name);
+%   
+% actions = [];
+% actions = [actions, scores(2).trace.action];
+%  
+% clear(f_name);
 
-board3 = [0,1,1,1;...
-          0,0,0,1;...
-          0,0,3,1;...
-          0,0,2,0];
+
+% board3 = [0,0,0,0;...
+%           0,0,0,0;...
+%           3,2,0,0;...
+%           0,1,0,0];
+% [score,trace] = CS4300_WW1(max_steps,f_name,board3);
+% scores(3).board = board3;
+% scores(3).score = score;
+% scores(3).trace = trace;
+% 
+% clear(f_name);
+
+board3 = [0,0,0,0;...
+          1,0,0,1;...
+          0,3,2,0;...
+          0,0,0,0];
 [score,trace] = CS4300_WW1(max_steps,f_name,board3);
 scores(3).board = board3;
 scores(3).score = score;

@@ -38,7 +38,7 @@ function Sip = CS4300_RTP(sentences,thm,vars)
 %     UU
 %     Summer 2014
 %
-MAX_CLAUSES = 2000;
+MAX_CLAUSES = 10000;
 
 
 num_sentences = length(sentences);

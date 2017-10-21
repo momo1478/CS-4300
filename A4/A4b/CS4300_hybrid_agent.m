@@ -12,7 +12,7 @@ function action = CS4300_hybrid_agent(percept)
 %   Fall 2017
 
 persistent KB plan safe unvisited state have_arrow safe_board have_gold;
-persistent possible_wumpus added_wumpus_spot;
+persistent possible_wumpus added_wumpus_spot previous_action;
 
 pit_offset = 32;
 wumpus_offset = 64;
@@ -27,9 +27,10 @@ if isempty(KB)
    safe_board = ones(4, 4);
    have_gold = 0;
    added_wumpus_spot = 0;
+   previous_action = 1;
 end
 
-cell_state = (state(1) - 1) * 4 + state(2);
+cell_state = (state(2) - 1) * 4 + state(1);
 safe_board(4 - state(2) + 1, state(1)) = 0;
 if ~ismember(cell_state,safe)
     safe = [safe,cell_state];
@@ -39,42 +40,54 @@ if ~ismember(cell_state,safe)
     KB = CS4300_Tell(KB, not_wumpus);
 end
 if ismember(cell_state, unvisited) 
-    unvisited(find(cell_state)) = [];
+    unvisited(find(unvisited == cell_state)) = [];
+end
+if cell_state == 3
+   x = 5; 
 end
 
 KB = CS4300_Tell(KB, CS4300_make_percept_sentence(...
     percept,state(1),state(2)));
 
 %% ASK SAFE SPACES TO 4 ADJACENT CELLS
-neighbors = [cell_state + 4,cell_state - 4,cell_state + 1,cell_state - 1];
-for i = 1:4
-    if ~ismember(neighbors(i),safe) &&...
-            neighbors(i) > 0 && neighbors(i) < 16
-        not_pit(1).clauses = -(neighbors(i) + pit_offset); 
-        not_wumpus(1).clauses = -(neighbors(i) + wumpus_offset);
+if previous_action == 1 || previous_action == 5
+    if rem(cell_state - 1,4) == 0 %nothing to left
+        neighbors = [cell_state + 4,cell_state - 4,cell_state + 1];
+    elseif rem(cell_state,4) == 0 %nothing to right
+        neighbors = [cell_state + 4,cell_state - 4,cell_state - 1];
+    else
+        neighbors = [cell_state + 4,cell_state - 4,...
+            cell_state + 1,cell_state - 1];
+    end
+    for i = 1:length(neighbors)
+        if ~ismember(neighbors(i),safe) &&...
+                neighbors(i) > 0 && neighbors(i) < 16
+            not_pit(1).clauses = -(neighbors(i) + pit_offset); 
+            not_wumpus(1).clauses = -(neighbors(i) + wumpus_offset);
 
-        pit(1).clauses = neighbors(i) + pit_offset; 
-        wumpus(1).clauses = neighbors(i) + wumpus_offset;
+            pit(1).clauses = neighbors(i) + pit_offset; 
+            wumpus(1).clauses = neighbors(i) + wumpus_offset;
 
-        not_pit_result = CS4300_Ask(KB, not_pit);
-        if not_pit_result == 1
-            KB = CS4300_Tell(KB, not_pit);
-        end
+            not_pit_result = CS4300_Ask(KB, not_pit);
+            if not_pit_result == 1
+                KB = CS4300_Tell(KB, not_pit);
+            end
 
-        not_wumpus_result = CS4300_Ask(KB, not_wumpus);
-        if not_wumpus_result == 1
-            KB = CS4300_Tell(KB, not_wumpus);
-        end
+            not_wumpus_result = CS4300_Ask(KB, not_wumpus);
+            if not_wumpus_result == 1
+                KB = CS4300_Tell(KB, not_wumpus);
+            end
 
-        if not_pit_result && not_wumpus_result && ...
-                ~CS4300_Ask(KB, pit) && ~CS4300_Ask(KB, wumpus)
-            safe = [safe,neighbors(i)];
-            safe_board(4 - floor((neighbors(i) - 1)/4),...
-                rem(neighbors(i) - 1,4) + 1) = 0;
-        else if percept(1) == 0 && percept(2) == 0
-            safe = [safe,neighbors(i)];
-            safe_board(4 - floor((neighbors(i) - 1)/4),...
-                rem(neighbors(i) - 1,4) + 1) = 0; 
+            if not_pit_result && not_wumpus_result && ...
+                    ~CS4300_Ask(KB, pit) && ~CS4300_Ask(KB, wumpus)
+                safe = [safe,neighbors(i)];
+                safe_board(4 - floor((neighbors(i) - 1)/4),...
+                    rem(neighbors(i) - 1,4) + 1) = 0;
+            else if percept(1) == 0 && percept(2) == 0
+                safe = [safe,neighbors(i)];
+                safe_board(4 - floor((neighbors(i) - 1)/4),...
+                    rem(neighbors(i) - 1,4) + 1) = 0; 
+                end
             end
         end
     end
@@ -108,6 +121,9 @@ end
 if isempty(plan) && have_arrow
     for i = 1:16
         if ~ismember(i,safe)
+            if i == 6
+                x = 5;
+            end
             not_wumpus(1).clauses = -(i + wumpus_offset);
             wumpus(1).clauses = i + wumpus_offset;
             if ~CS4300_Ask(KB, not_wumpus) && CS4300_Ask(KB, wumpus)
@@ -137,6 +153,10 @@ if isempty(plan)
 end
 %%
 action = plan(1);
+previous_action = action;
+if action == 6
+   x = 5; 
+end
 plan = plan(2:end);
 state = CS4300_Wumpus_transition(state,action,safe_board);
 
