@@ -1,4 +1,4 @@
-function [scores,traces] = CS4300_WW3(max_steps,f_name)
+function [scores,trace] = CS4300_WW3(max_steps,f_name)
 % CS4300_WW3 - Wumpus World 3 (hybrid agent) simulator
 % On input:
 %     max_steps (int): maximum number of simulation steps
@@ -16,16 +16,18 @@ function [scores,traces] = CS4300_WW3(max_steps,f_name)
 %     UU
 %     Summer 2015
 %
+% 
+% traces = [];
+% 
+% agent.x = 1;
+% agent.y = 1;
+% agent.alive = 1;  
+% agent.gold = 0;  % grabbed gold in same room
+% agent.dir = 0;  % facing right
+% agent.succeed = 0;  % has gold and climbed out
+% agent.climbed = 0; % climbed out
 
 traces = [];
-
-agent.x = 1;
-agent.y = 1;
-agent.alive = 1;  
-agent.gold = 0;  % grabbed gold in same room
-agent.dir = 0;  % facing right
-agent.succeed = 0;  % has gold and climbed out
-agent.climbed = 0; % climbed out
 % 
 % clear(f_name);
 % 
@@ -39,7 +41,7 @@ agent.climbed = 0; % climbed out
 % scores(1).trace = trace;
 % 
 % clear(f_name);
-
+%
 % board2 = [0,0,0,1;...
 %           3,2,1,0;...
 %           0,0,0,0;...
@@ -48,6 +50,7 @@ agent.climbed = 0; % climbed out
 % scores(2).board = board2;
 % scores(2).score = score;
 % scores(2).trace = trace;
+%  
 %   
 % actions = [];
 % actions = [actions, scores(2).trace.action];
@@ -75,4 +78,15 @@ scores(3).board = board3;
 scores(3).score = score;
 scores(3).trace = trace;
 
-clear(f_name);
+% clear(f_name);
+
+% board4 = [0,0,0,0;...
+%           1,1,1,1;...
+%           0,3,2,0;...
+%           0,0,0,0];
+% [score,trace] = CS4300_WW1(max_steps,f_name,board4);
+% scores(4).board = board4;
+% scores(4).score = score;
+% scores(4).trace = trace;
+% 
+% clear(f_name);
