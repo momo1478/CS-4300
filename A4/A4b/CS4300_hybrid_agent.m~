@@ -49,6 +49,9 @@ KB = CS4300_Tell(KB, CS4300_make_percept_sentence(...
 
 %% ASK SAFE SPACES TO 4 ADJACENT CELLS
 if previous_action == 1 || previous_action == 5
+    if previous_action == 5
+       x= 
+    end
     if rem(cell_state - 1,4) == 0 %nothing to left
         neighbors = [cell_state + 4,cell_state - 4,cell_state + 1];
     elseif rem(cell_state,4) == 0 %nothing to right
@@ -132,7 +135,7 @@ if percept(5) == 1 && added_wumpus_spot == 0
 end
 
 %% VISIT ALL SAFE SPACES
-if isempty(plan) || ~isempty(intersect(unvisited,safe))
+if isempty(plan)
     plan = CS4300_Plan_Route(state,...
         CS4300_Coor_To_XYList(intersect(unvisited,safe)), safe_board);
 end

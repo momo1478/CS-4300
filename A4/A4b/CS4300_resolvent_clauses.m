@@ -60,7 +60,7 @@ for p = 1:num_pos
              n_clause(1:n_index-1),n_clause(n_index+1:end)];        
 
     end
-    if len_Ui > MAX_CLAUSES
+    if num_pos/len_Ti > 0.75 || num_neg/len_Ti > 0.75
         Ui = [];
         return
     end
