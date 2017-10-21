@@ -55,9 +55,11 @@ for i = 1:n
     Sip = CS4300_elim_L_nL(Sipn);
     Ti = CS4300_parent_clauses(Sip,vars(i));
     Ui = CS4300_resolvent_clauses(Ti,vars(i));
-    if Ui == Inf
-       Sip = Sipn;
-       return; 
+    if ~isstruct(Ui)
+       if Ui == Inf
+           Sip = Sipn;
+           return;
+       end
     end
     if CS4300_empty_clause(Ui)
         Sip = [];
