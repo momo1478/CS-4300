@@ -62,6 +62,5 @@ for p = 1:num_pos
             Ui = Inf;
             return
          end
-
     end
 end
