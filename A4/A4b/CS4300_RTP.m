@@ -38,11 +38,11 @@ function Sip = CS4300_RTP(sentences,thm,vars)
 %     UU
 %     Summer 2014
 %
-persistent maxcgens
+%persistent maxcgens
 
-if isempty(maxcgens)
-    maxcgens = [];
-end
+%if isempty(maxcgens)
+    %maxcgens = [];
+%end
 
 
 MAX_CLAUSES = 12000;
@@ -64,24 +64,24 @@ for i = 1:n
     if ~isstruct(Ui)
        if Ui == Inf
            Sip = Sipn;
-           maxcgens = [maxcgens,length(Sipn)];
-           mean(maxcgens)
+           %maxcgens = [maxcgens,length(Sipn)];
+           %mean(maxcgens)
            return;
        end
     end
     if CS4300_empty_clause(Ui)
         Sip = [];
         Sip(1).clauses = [];
-        maxcgens = [maxcgens,length(Sipn)];
-        mean(maxcgens)
+        %maxcgens = [maxcgens,length(Sipn)];
+        %mean(maxcgens)
         return
     end
     Sipn = CS4300_update_S(Sip,Ti,Ui);
     
     if length(Sipn) > MAX_CLAUSES
         Sip = Sipn;
-        maxcgens = [maxcgens,length(Sipn)];
-        mean(maxcgens)
+        %maxcgens = [maxcgens,length(Sipn)];
+        %mean(maxcgens)
         return
     end
 end

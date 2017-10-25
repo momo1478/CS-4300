@@ -23,12 +23,20 @@ if isempty(KB)
     return;
 end
 
-
 if ~isstruct(sentence)
-    temp(1).clauses = sentence;
-    KB_out = CS4300_clause_union(KB,temp);
-    return;
+    temp = sentence;
+    sentence = [];
+    sentence(1).clauses = temp;
 end
+
+%check to see if opposite literal already exists to prevent inconsistent KB
+for i = 1:length(KB)
+    if KB(i).clauses == -1 * sentence(1).clauses
+        KB(i) = [];
+        break;
+    end
+end
+
 
 KB_out = CS4300_clause_union(KB,sentence);
 

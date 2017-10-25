@@ -173,9 +173,6 @@ end
 %%
 action = plan(1);
 previous_action = action;
-if action == 6
-   x = 5; 
-end
 plan = plan(2:end);
 state = CS4300_Wumpus_transition(state,action,safe_board);
 
