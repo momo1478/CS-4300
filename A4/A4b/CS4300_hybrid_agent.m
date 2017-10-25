@@ -132,7 +132,7 @@ if percept(5) == 1 && added_wumpus_spot == 0
 end
 
 %% VISIT ALL SAFE SPACES
-if isempty(plan) || ~isempty(intersect(unvisited,safe))
+if isempty(plan) || ~isempty(intersect(unvisited,safe)) && ~have_gold
     plan = CS4300_Plan_Route(state,...
         CS4300_Coor_To_XYList(intersect(unvisited,safe)), safe_board);
 end
