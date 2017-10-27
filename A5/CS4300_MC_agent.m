@@ -30,6 +30,7 @@ CLIMB = 6;
 
 persistent safe pits Wumpus board KB have_gold have_arrow risk
 persistent agent frontier visited t KB_vars escape travel kill
+persistent stench breezes num_trials
 
 if isempty(agent)
     t = 0;
