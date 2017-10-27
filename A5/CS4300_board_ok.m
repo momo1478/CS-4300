@@ -30,7 +30,13 @@ function is_ok = CS4300_board_ok(board, breezes, stenches)
 
 
 for i = 1:16
-    neighbors = [i - 1, i + 1, i + 4, i - 4];
+    if rem(i,4) == 1 %left side no nieghbor to left
+        neighbors = [i + 1, i + 4, i - 4];
+    elseif rem(i,4) == 0 %right side no nieghbor to right
+        neighbors = [i - 1, i + 4, i - 4];
+    else
+        neighbors = [i - 1, i + 1, i + 4, i - 4];
+    end
     wumpus_x = rem(i - 1,4) + 1;
     wumpus_y = floor((i - 1)/4) + 1;
     
@@ -38,7 +44,7 @@ for i = 1:16
     matlab_y = wumpus_x;
     if stenches(matlab_x, matlab_y) == 1
         is_ok = 0;
-        for j = 1:4
+        for j = 1:length(neighbors)
            if neighbors(j) > 0 && neighbors(j) < 17
                wumpus_x_neighbor = rem(neighbors(j) - 1,4) + 1;
                wumpus_y_neighbor = floor((neighbors(j) - 1)/4) + 1;
@@ -56,7 +62,7 @@ for i = 1:16
         end
     elseif stenches(matlab_x, matlab_y) == 0
         is_ok = 1;
-        for j = 1:4
+        for j = 1:length(neighbors)
            if neighbors(j) > 0 && neighbors(j) < 17
                wumpus_x_neighbor = rem(neighbors(j) - 1,4) + 1;
                wumpus_y_neighbor = floor((neighbors(j) - 1)/4) + 1;
@@ -76,7 +82,7 @@ for i = 1:16
     
     if breezes(matlab_x, matlab_y) == 1
         is_ok = 0;
-        for j = 1:4
+        for j = 1:length(neighbors)
            if neighbors(j) > 0 && neighbors(j) < 17
                wumpus_x_neighbor = rem(neighbors(j) - 1,4) + 1;
                wumpus_y_neighbor = floor((neighbors(j) - 1)/4) + 1;
@@ -94,7 +100,7 @@ for i = 1:16
         end
     elseif breezes(matlab_x, matlab_y) == 0
         is_ok = 1;
-        for j = 1:4
+        for j = 1:length(neighbors)
            if neighbors(j) > 0 && neighbors(j) < 17
                wumpus_x_neighbor = rem(neighbors(j) - 1,4) + 1;
                wumpus_y_neighbor = floor((neighbors(j) - 1)/4) + 1;

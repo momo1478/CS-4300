@@ -29,12 +29,16 @@ SHOOT = 5;
 CLIMB = 6;
 
 persistent safe pits Wumpus board KB have_gold have_arrow risk
-persistent state frontier visited KB_vars escape travel kill
+persistent state frontier visited escape travel kill
 persistent stench breezes num_trials
-
 
 if isempty(state)
     state = [1,1,0];
+    
+    stench = -ones(4,4);
+    breezes = -ones(4,4);
+    num_trials = -ones(4,4);
+    
     safe = -ones(4,4);
     pits = -ones(4,4);
     Wumpus = -ones(4,4);
@@ -109,22 +113,19 @@ if have_gold==0&percept(3)==1
     escape = [GRAB];
     have_gold = 1;
     [so,no] = CS4300_Wumpus_A_star(abs(board),...
-        [agent.x,agent.y,agent.dir],...
+        [state(1),state(2),state(3)],...
         [1,1,0],'CS4300_A_star_Man');
     escape = [escape;so(2:end,4)];
     escape = [escape;CLIMB];
     action = escape(1);
     escape = escape(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
-    visited(4-agent.y+1,agent.x) = 1;
-    frontier(4-agent.y+1,agent.x) = 0;
-    board(4-agent.y+1,agent.x) = 0;
+    state = CS4300_Wumpus_transition(state,action,safe);
+    visited(4-state(2)+1,state(1)) = 1;
+    frontier(4-state(2)+1,state(1)) = 0;
+    board(4-state(2)+1,state(1)) = 0;
     return
 end
-
-percept_sentence = CS4300_make_percept_sentence(percept,agent.x,agent.y);
-KB = CS4300_Tell(KB,percept_sentence);
 
 neighbors = CS4300_neighbors(agent.x,agent.y,safe);
 if isempty(neighbors)
@@ -304,7 +305,7 @@ if isempty(escape)&isempty(travel)&isempty(risk)&isempty(kill)
     action = risk(1);
     risk = risk(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
+    state = CS4300_Wumpus_transition(state,action,safe);
     visited(4-agent.y+1,agent.x) = 1;
     frontier(4-agent.y+1,agent.x) = 0;
     board(4-agent.y+1,agent.x) = 0;
