@@ -29,13 +29,10 @@ SHOOT = 5;
 CLIMB = 6;
 
 persistent safe pits Wumpus board KB have_gold have_arrow risk
-persistent agent frontier visited t KB_vars escape travel kill
+persistent state frontier visited KB_vars escape travel kill
 
-if isempty(agent)
-    t = 0;
-    agent.x = 1;
-    agent.y = 1;
-    agent.dir = 0;
+if isempty(state)
+    state = [1,1,0];
     safe = -ones(4,4);
     pits = -ones(4,4);
     Wumpus = -ones(4,4);
@@ -49,13 +46,10 @@ if isempty(agent)
     visited(4,1) = 1;
     have_gold = 0;
     have_arrow = 1;
-    [KBs,KBi,KB_vars] = BR_gen_KB;
     KB = KBi;
     escape = [];
     travel = [];
     kill = [];
-    KB(end+1).clauses = [-65];
-    KB(end+1).clauses = [-33];
 end
 
 if percept(5)==1
@@ -69,7 +63,7 @@ if ~isempty(escape)
     action = escape(1);
     escape = escape(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
+    state = CS4300_Wumpus_transition(state,action,safe);
     visited(4-agent.y+1,agent.x) = 1;
     frontier(4-agent.y+1,agent.x) = 0;
     board(4-agent.y+1,agent.x) = 0;
@@ -80,7 +74,7 @@ if ~isempty(travel)
     action = travel(1);
     travel = travel(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
+    state = CS4300_Wumpus_transition(state,action,safe);
     visited(4-agent.y+1,agent.x) = 1;
     frontier(4-agent.y+1,agent.x) = 0;
     board(4-agent.y+1,agent.x) = 0;
@@ -91,7 +85,7 @@ if ~isempty(risk)
     action = risk(1);
     risk = risk(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
+    agent = CS4300_Wumpus_transition(agent,action);
     visited(4-agent.y+1,agent.x) = 1;
     frontier(4-agent.y+1,agent.x) = 0;
     board(4-agent.y+1,agent.x) = 0;
