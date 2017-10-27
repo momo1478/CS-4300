@@ -30,6 +30,8 @@ CLIMB = 6;
 
 persistent safe pits Wumpus board KB have_gold have_arrow risk
 persistent state frontier visited KB_vars escape travel kill
+persistent stench breezes num_trials
+
 
 if isempty(state)
     state = [1,1,0];
