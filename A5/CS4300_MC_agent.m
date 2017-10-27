@@ -28,8 +28,8 @@ GRAB = 4;
 SHOOT = 5;
 CLIMB = 6;
 
-persistent safe pits Wumpus board KB have_gold have_arrow risk
-persistent state frontier visited KB_vars escape travel kill
+persistent safe pits Wumpus board have_gold have_arrow risk
+persistent state visited escape travel kill
 persistent stench breezes num_trials
 
 
@@ -40,7 +40,6 @@ if isempty(state)
     Wumpus = -ones(4,4);
     board = -ones(4,4);
     visited = zeros(4,4);
-    frontier = zeros(4,4);
     safe(4,1) = 1;
     pits(4,1) = 0;
     Wumpus(4,1) = 0;
@@ -48,7 +47,6 @@ if isempty(state)
     visited(4,1) = 1;
     have_gold = 0;
     have_arrow = 1;
-    KB = KBi;
     escape = [];
     travel = [];
     kill = [];
@@ -66,9 +64,8 @@ if ~isempty(escape)
     escape = escape(2:end);
     % Update agent's idea of state
     state = CS4300_Wumpus_transition(state,action,safe);
-    visited(4-agent.y+1,agent.x) = 1;
-    frontier(4-agent.y+1,agent.x) = 0;
-    board(4-agent.y+1,agent.x) = 0;
+    visited(4-state(2)+1,state(1)) = 1;
+    board(4-state(2)+1,state(1)) = 0;
     return
 end
 
@@ -77,9 +74,8 @@ if ~isempty(travel)
     travel = travel(2:end);
     % Update agent's idea of state
     state = CS4300_Wumpus_transition(state,action,safe);
-    visited(4-agent.y+1,agent.x) = 1;
-    frontier(4-agent.y+1,agent.x) = 0;
-    board(4-agent.y+1,agent.x) = 0;
+    visited(4-state(2)+1,state(1)) = 1;
+    board(4-state(2)+1,state(1)) = 0;
     return
 end
 
@@ -87,10 +83,9 @@ if ~isempty(risk)
     action = risk(1);
     risk = risk(2:end);
     % Update agent's idea of state
-    agent = CS4300_Wumpus_transition(agent,action);
-    visited(4-agent.y+1,agent.x) = 1;
-    frontier(4-agent.y+1,agent.x) = 0;
-    board(4-agent.y+1,agent.x) = 0;
+    state = CS4300_Wumpus_transition(state,action,safe);
+    visited(4-state(2)+1,state(1)) = 1;
+    board(4-state(2)+1,state(1)) = 0;
     return
 end
 
@@ -98,10 +93,9 @@ if ~isempty(kill)
     action = kill(1);
     kill = kill(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
-    visited(4-agent.y+1,agent.x) = 1;
-    frontier(4-agent.y+1,agent.x) = 0;
-    board(4-agent.y+1,agent.x) = 0;
+    state = CS4300_Wumpus_transition(state,action,safe);
+    visited(4-state(2)+1,state(1)) = 1;
+    board(4-state(2)+1,state(1)) = 0;
     return
 end
 
@@ -116,15 +110,11 @@ if have_gold==0&percept(3)==1
     action = escape(1);
     escape = escape(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
-    visited(4-agent.y+1,agent.x) = 1;
-    frontier(4-agent.y+1,agent.x) = 0;
-    board(4-agent.y+1,agent.x) = 0;
+    state = CS4300_Wumpus_transition(state,action,safe);
+    visited(4-state(2)+1,state(1)) = 1;
+    board(4-state(2)+1,state(1)) = 0;
     return
 end
-
-percept_sentence = CS4300_make_percept_sentence(percept,agent.x,agent.y);
-KB = CS4300_Tell(KB,percept_sentence);
 
 neighbors = CS4300_neighbors(agent.x,agent.y,safe);
 if isempty(neighbors)
@@ -138,21 +128,16 @@ for n = 1:len_neighbors
     row = 4 - y + 1;
     col = x;
     if ~(visited(row,col)==1|safe(row,col)==1)
-        P_index = CS4300_var2index(KB_vars,['P',num2str(x),num2str(y)]);
-        thm_nP(1).clauses = [-P_index];
-        nPn = CS4300_Ask(KB,thm_nP);
-        W_index = CS4300_var2index(KB_vars,['W',num2str(x),num2str(y)]);
-        thm_nW(1).clauses = [-W_index];
-        nWn = CS4300_Ask(KB,thm_nW);
+        %%TODO%%
+        %nPn = 0;
+        %nWn = 0;
         if nPn==0
-            thm_P(1).clauses = [P_index];
-            Pn = CS4300_Ask(KB,thm_P);
+
         else
             Pn = 0;
         end
         if nWn==0
-            thm_W(1).clauses = [W_index];
-            Wn = CS4300_Ask(KB,thm_W);
+
         else
             Wn = 0;
         end
@@ -161,19 +146,16 @@ for n = 1:len_neighbors
             board(row,col) = 0;
         end
         if nPn==1
-            KB = CS4300_Tell(KB,thm_nP);
             pits(row,col) = 0;
         end
         if nWn==1
-            KB = CS4300_Tell(KB,thm_nW);
+
             Wumpus(row,col) = 0;
         end
         if Pn==1
-            KB = CS4300_Tell(KB,thm_P);
             pits(row,col) = 1;
         end
         if Wn==1
-            KB = CS4300_Tell(KB,thm_W);
             Wumpus(row,col) = 1;
         end
     end
@@ -203,11 +185,11 @@ if ~isempty(rW)
         row_kill = 0;
     end
     if ~isempty(r_kill)
-        if x_kill==agent.x&y_kill==agent.y
-            final_dir = agent.dir;
+        if x_kill==state(1)&y_kill==state(2)
+            final_dir = state(3);
         else
             [so,no] = CS4300_Wumpus_A_star(abs(board),...
-                [agent.x,agent.y,agent.dir],...
+                state,...
                 [x_kill,y_kill,0],'CS4300_A_star_Man');
             kill = so(2:end,4);  % gets agent to right place
             final_dir = so(end,3);
@@ -254,10 +236,9 @@ if ~isempty(rW)
     action = kill(1);
     kill = kill(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
-    visited(4-agent.y+1,agent.x) = 1;
-    frontier(4-agent.y+1,agent.x) = 0;
-    board(4-agent.y+1,agent.x) = 0;
+    state = CS4300_Wumpus_transition(state,action,safe);
+    visited(4-state(2)+1,state(1)) = 1;
+    board(4-state(2)+1,state(1)) = 0;;
     return
 end
 
@@ -267,26 +248,26 @@ if isempty(travel)
         cand_x = cand_cols;
         cand_y = 4 - cand_rows + 1;
         [so,no] = CS4300_Wumpus_A_star(abs(board),...
-            [agent.x,agent.y,agent.dir],...
+            state,...
             [cand_x(1),cand_y(1),0],'CS4300_A_star_Man');
         travel = [so(2:end,4)];
         action = travel(1);
         travel = travel(2:end);
         % Update agent's idea of state
-        agent = CS4300_agent_update(agent,action);
-        visited(4-agent.y+1,agent.x) = 1;
-        frontier(4-agent.y+1,agent.x) = 0;
-        board(4-agent.y+1,agent.x) = 0;
+        state = CS4300_Wumpus_transition(state,action,safe);
+        visited(4-state(2)+1,state(1)) = 1;
+        board(4-state(2)+1,state(1)) = 0;
         return
     end
 end
 
 % Take a risk
 if isempty(escape)&isempty(travel)&isempty(risk)&isempty(kill)
-    [cand_row,cand_col] = CS4300_frontier(visited);
+    %%TODO%%
+    %[cand_row,cand_col] = [0,0];
     cand_x = cand_col;
     cand_y = 4 - cand_row + 1;
-    indexes = find(cand_x~=agent.x|cand_y~=agent.y);
+    indexes = find(cand_x~=state(1)|cand_y~=state(2));
     if ~isempty(indexes)
         goal_x = cand_x(indexes(1));
         goal_y = cand_y(indexes(1));
@@ -294,7 +275,7 @@ if isempty(escape)&isempty(travel)&isempty(risk)&isempty(kill)
     temp_board = board;
     temp_board(4-goal_y+1,goal_x) = 0;
     [so,no] = CS4300_Wumpus_A_star(abs(temp_board),...
-        [agent.x,agent.y,agent.dir],...
+        state,...
         [goal_x,goal_y,0],'CS4300_A_star_Man');
     if ~isempty(so)
         risk = [so(2:end,4)];
@@ -304,10 +285,9 @@ if isempty(escape)&isempty(travel)&isempty(risk)&isempty(kill)
     action = risk(1);
     risk = risk(2:end);
     % Update agent's idea of state
-    agent = CS4300_agent_update(agent,action);
-    visited(4-agent.y+1,agent.x) = 1;
-    frontier(4-agent.y+1,agent.x) = 0;
-    board(4-agent.y+1,agent.x) = 0;
+    state = CS4300_Wumpus_transition(state,action,safe);
+    visited(4-state(2)+1,state(1)) = 1;
+    board(4-state(2)+1,state(1)) = 0;
     return
 end
 
