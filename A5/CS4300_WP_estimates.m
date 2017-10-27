@@ -28,12 +28,37 @@ function [pits,Wumpus] = CS4300_WP_estimates(breezes,stench,num_trials)
 % Wumpus =
 %    0.0806 0.0800 0.0827 0.0720
 %    0.0780 0.0738 0.0723 0.0717
-%    0 0.0845 0.0685 0.0803
-%    0 0 0.0741 0.0812
+%    0      0.0845 0.0685 0.0803
+%    0      0      0.0741 0.0812
 % Author:
 %     Eric Waugh and Monish Gupta
 %     u0947296 and u1008121
 %     Fall 2017
-%
+
+pits = zeros(4,4);
+Wumpus = zeros(4,4);
+count = 0;
+
+for s = 1:num_trials
+    board = CS4300_gen_board_no_GW(.2);
+    if CS4300_board_ok(board, breezes, stench)
+        count = count + 1;
+        for i = 1:4
+           for j = 1:4
+              if board(i,j) == 1
+                 pits(i,j) = pits(i,j) + 1; 
+              end
+              if board(i,j) == 3
+                 Wumpus(i,j) = Wumpus(i,j) + 1; 
+              end
+           end
+        end
+    end
+end
+
+pits = pits/count;
+Wumpus = Wumpus/count;
+
+
 
 
