@@ -34,11 +34,9 @@ persistent stench breezes num_trials
 
 if isempty(state)
     state = [1,1,0];
-
     stench = -ones(4,4);
     breezes = -ones(4,4);
     num_trials = -ones(4,4);
-    
     safe = -ones(4,4);
     pits = -ones(4,4);
     Wumpus = -ones(4,4);
