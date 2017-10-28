@@ -25,7 +25,7 @@ GRAB = 4;
 SHOOT = 5;
 CLIMB = 6;
 
-persistent safe pits Wumpus board have_gold have_arrow
+persistent safe pits Wumpus board have_gold have_arrow killed_wumpus
 persistent state visited plan stench breezes num_trials
 
 if isempty(state)
@@ -45,6 +45,7 @@ if isempty(state)
     visited(4,1) = 1;
     have_gold = 0;
     have_arrow = 1;
+    killed_wumpus = 0;
     plan = [];
 end
 
@@ -53,6 +54,7 @@ if percept(5)==1
     board(rW,cW) = 0;
     safe(rW,cW) = 1;
     Wumpus(rW,cW) = 0;
+    killed_wumpus = 1;
 end
 
 if have_gold==0 && percept(3)==1
@@ -69,7 +71,7 @@ if ~isempty(plan)
     action = plan(1);
     plan = plan(2:end);
     % Update agent's idea of state
-    state = CS4300_Wumpus_transition(state,action,safe);
+    state = CS4300_Wumpus_transition(state,action,board);
     visited(4-state(2)+1,state(1)) = 1;
     board(4-state(2)+1,state(1)) = 0;
     return
@@ -83,8 +85,10 @@ for i = 1:4
     for j = 1:4
         if pit_est(i,j) == 0 && wumpus_est(i,j) == 0
            safe(i,j) = 1;
+           board(i,j) = 0;
         elseif pit_est(i,j) == 1 && wumpus_est(i,j) == 1
            safe(i,j) = 0;
+           board(i,j) = 1;
         end
         if pit_est(i,j) == 1 || pit_est(i,j) == 0
            pits(i,j) = pit_est(i,j); 
@@ -93,6 +97,20 @@ for i = 1:4
            Wumpus(i,j) = wumpus_est(i,j); 
         end
     end
+end
+
+[wumpus_x,wumpus_y] = find(Wumpus==1);
+if ~isempty(wumpus_x) && have_arrow
+    Wx = wumpus_x;
+    Wy = 4 - wumpus_y + 1;
+    plan = CS4300_Plan_Shot(abs(board), state, Wx, Wy);
+    have_arrow = 0;
+    action = plan(1);
+    plan = plan(2:end);
+    state = CS4300_Wumpus_transition(state,action,board);
+    visited(4-state(2)+1,state(1)) = 1;
+    board(4-state(2)+1,state(1)) = 0;;
+    return
 end
 
 
@@ -171,7 +189,7 @@ end
 %     action = plan(1);
 %     plan = plan(2:end);
 %     % Update agent's idea of state
-%     state = CS4300_Wumpus_transition(state,action,safe);
+%     state = CS4300_Wumpus_transition(state,action,board);
 %     visited(4-state(2)+1,state(1)) = 1;
 %     board(4-state(2)+1,state(1)) = 0;;
 %     return
@@ -190,7 +208,7 @@ if isempty(plan)
         action = plan(1);
         plan = plan(2:end);
         % Update agent's idea of state
-        state = CS4300_Wumpus_transition(state,action,safe);
+        state = CS4300_Wumpus_transition(state,action,board);
         visited(4-state(2)+1,state(1)) = 1;
         board(4-state(2)+1,state(1)) = 0;
         return
@@ -221,7 +239,7 @@ end
 %     action = plan(1);
 %     plan = plan(2:end);
 %     % Update agent's idea of state
-%     state = CS4300_Wumpus_transition(state,action,safe);
+%     state = CS4300_Wumpus_transition(state,action,board);
 %     visited(4-state(2)+1,state(1)) = 1;
 %     board(4-state(2)+1,state(1)) = 0;
 %     return

@@ -56,8 +56,10 @@ for s = 1:num_trials
     end
 end
 
-pits = pits/count;
-Wumpus = Wumpus/count;
+if count > 0
+    pits = pits/count;
+    Wumpus = Wumpus/count;
+end
 
 
 
