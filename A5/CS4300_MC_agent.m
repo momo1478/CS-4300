@@ -21,23 +21,19 @@ function action = CS4300_MC_agent(percept)
 %   Monish Gupta and Eric Waugh
 %   u0947296 u1008121
 %   Fall 2017
-FORWARD = 1;
-RIGHT = 2;
-LEFT = 3;
 GRAB = 4;
 SHOOT = 5;
 CLIMB = 6;
 
 persistent safe pits Wumpus board have_gold have_arrow
-persistent state visited plan
-persistent stench breezes num_trials
+persistent state visited plan stench breezes num_trials
 
 if isempty(state)
     state = [1,1,0];
 
     stench = -ones(4,4);
     breezes = -ones(4,4);
-    num_trials = -ones(4,4);
+    num_trials = 10000;
     
     safe = -ones(4,4);
     pits = -ones(4,4);
@@ -61,7 +57,7 @@ if percept(5)==1
     Wumpus(rW,cW) = 0;
 end
 
-if have_gold==0&percept(3)==1
+if have_gold==0 && percept(3)==1
     plan = [GRAB];
     have_gold = 1;
     [so,no] = CS4300_Wumpus_A_star(abs(board),...
@@ -82,88 +78,106 @@ if ~isempty(plan)
 end
 
 %Do montecarlo stuff to guess which spots are safe
+stench(4-state(2)+1,state(1)) = percept(1);
+breezes(4-state(2)+1,state(1)) = percept(2);
+[pit_est,wumpus_est] = CS4300_WP_estimates(breezes,stench,num_trials);
+for i = 1:4
+    for j = 1:4
+        if pit_est(i,j) == 0 && wumpus_est(i,j) == 0
+           safe(i,j) = 1;
+        elseif pit_est(i,j) == 1 && wumpus_est(i,j) == 1
+           safe(i,j) = 0;
+        end
+        if pit_est(i,j) == 1 || pit_est(i,j) == 0
+           pits(i,j) = pit_est(i,j); 
+        end
+        if wumpus_est(i,j) == 1 || wumpus_est(i,j) == 0
+           Wumpus(i,j) = wumpus_est(i,j); 
+        end
+    end
+end
 
 
 % No Wumpus shot yet
-[rW,cW] = find(Wumpus==1);
-if ~isempty(rW)
-    r_kill = [];
-    c_kill = [];
-    [r_safe,c_safe] = find(safe==1);
-    r_index = find(r_safe==rW);
-    c_index = find(c_safe==cW);
-    if ~isempty(r_index)
-        r_kill = r_safe(r_index(1));
-        c_kill = c_safe(r_index(1));
-        x_kill = c_kill;
-        y_kill = 4 - r_kill + 1;
-        row_kill = 1;
-        col_kill = 0;
-    elseif ~isempty(c_index)
-        r_kill = r_safe(c_index(1));
-        c_kill = c_safe(c_index(1));
-        x_kill = c_kill;
-        y_kill = 4 - r_kill + 1;
-        col_kill = 1;
-        row_kill = 0;
-    end
-    if ~isempty(r_kill)
-        if x_kill==state(1)&y_kill==state(2)
-            final_dir = state(3);
-        else
-            [so,no] = CS4300_Wumpus_A_star(abs(board),...
-                state,...
-                [x_kill,y_kill,0],'CS4300_A_star_Man');
-            plan = so(2:end,4);  % gets agent to right place
-            final_dir = so(end,3);
-        end
-        if row_kill==1
-            if cW>c_kill
-                if final_dir==1
-                    plan = [plan;2];
-                elseif final_dir==2
-                    plan = [plan;2;2];
-                elseif final_dir==3
-                    plan = [plan;3];
-                end
-            else
-                if final_dir==0
-                    plan = [plan;2;2];
-                elseif final_dir==1
-                    plan = [plan;3];
-                elseif final_dir==3
-                    plan = [plan;2];
-                end
-            end
-        else
-            if rW>r_kill
-                if final_dir==0
-                    plan = [plan;3];
-                elseif final_dir==1
-                    plan = [plan;2;2];
-                elseif final_dir==2
-                    plan = [plan;3];
-                end
-            else
-                if final_dir==0
-                    plan = [plan;3];
-                elseif final_dir==2
-                    plan = [plan;2];
-                elseif final_dir==3
-                    plan = [plan;2;2];
-                end
-            end
-        end
-        plan = [plan;5];
-    end
-    action = plan(1);
-    plan = plan(2:end);
-    % Update agent's idea of state
-    state = CS4300_Wumpus_transition(state,action,safe);
-    visited(4-state(2)+1,state(1)) = 1;
-    board(4-state(2)+1,state(1)) = 0;;
-    return
-end
+% [rW,cW] = find(Wumpus==1);
+% if ~isempty(rW)
+%     r_kill = [];
+%     c_kill = [];
+%     [r_safe,c_safe] = find(safe==1);
+%     r_index = find(r_safe==rW);
+%     c_index = find(c_safe==cW);
+%     if ~isempty(r_index)
+%         r_kill = r_safe(r_index(1));
+%         c_kill = c_safe(r_index(1));
+%         x_kill = c_kill;
+%         y_kill = 4 - r_kill + 1;
+%         row_kill = 1;
+%         col_kill = 0;
+%     elseif ~isempty(c_index)
+%         r_kill = r_safe(c_index(1));
+%         c_kill = c_safe(c_index(1));
+%         x_kill = c_kill;
+%         y_kill = 4 - r_kill + 1;
+%         col_kill = 1;
+%         row_kill = 0;
+%     end
+%     if ~isempty(r_kill)
+%         if x_kill==state(1)&y_kill==state(2)
+%             final_dir = state(3);
+%         else
+%             [so,no] = CS4300_Wumpus_A_star(abs(board),...
+%                 state,...
+%                 [x_kill,y_kill,0],'CS4300_A_star_Man');
+%             plan = so(2:end,4);  % gets agent to right place
+%             final_dir = so(end,3);
+%         end
+%         if row_kill==1
+%             if cW>c_kill
+%                 if final_dir==1
+%                     plan = [plan;2];
+%                 elseif final_dir==2
+%                     plan = [plan;2;2];
+%                 elseif final_dir==3
+%                     plan = [plan;3];
+%                 end
+%             else
+%                 if final_dir==0
+%                     plan = [plan;2;2];
+%                 elseif final_dir==1
+%                     plan = [plan;3];
+%                 elseif final_dir==3
+%                     plan = [plan;2];
+%                 end
+%             end
+%         else
+%             if rW>r_kill
+%                 if final_dir==0
+%                     plan = [plan;3];
+%                 elseif final_dir==1
+%                     plan = [plan;2;2];
+%                 elseif final_dir==2
+%                     plan = [plan;3];
+%                 end
+%             else
+%                 if final_dir==0
+%                     plan = [plan;3];
+%                 elseif final_dir==2
+%                     plan = [plan;2];
+%                 elseif final_dir==3
+%                     plan = [plan;2;2];
+%                 end
+%             end
+%         end
+%         plan = [plan;5];
+%     end
+%     action = plan(1);
+%     plan = plan(2:end);
+%     % Update agent's idea of state
+%     state = CS4300_Wumpus_transition(state,action,safe);
+%     visited(4-state(2)+1,state(1)) = 1;
+%     board(4-state(2)+1,state(1)) = 0;;
+%     return
+% end
 
 % travel to safe spot
 if isempty(plan)
@@ -185,35 +199,35 @@ if isempty(plan)
     end
 end
 
-% Take a risk
-if isempty(plan)
-    %%TODO%%
-    %[cand_row,cand_col] = [0,0];
-    cand_x = cand_col;
-    cand_y = 4 - cand_row + 1;
-    indexes = find(cand_x~=state(1)|cand_y~=state(2));
-    if ~isempty(indexes)
-        goal_x = cand_x(indexes(1));
-        goal_y = cand_y(indexes(1));
-    end
-    temp_board = board;
-    temp_board(4-goal_y+1,goal_x) = 0;
-    [so,no] = CS4300_Wumpus_A_star(abs(temp_board),...
-        state,...
-        [goal_x,goal_y,0],'CS4300_A_star_Man');
-    if ~isempty(so)
-        plan = [so(2:end,4)];
-    else
-        plan = randi(3);
-    end
-    action = plan(1);
-    plan = plan(2:end);
-    % Update agent's idea of state
-    state = CS4300_Wumpus_transition(state,action,safe);
-    visited(4-state(2)+1,state(1)) = 1;
-    board(4-state(2)+1,state(1)) = 0;
-    return
-end
+% % Take a risk
+% if isempty(plan)
+%     %%TODO%%
+%     %[cand_row,cand_col] = [0,0];
+%     cand_x = cand_col;
+%     cand_y = 4 - cand_row + 1;
+%     indexes = find(cand_x~=state(1)|cand_y~=state(2));
+%     if ~isempty(indexes)
+%         goal_x = cand_x(indexes(1));
+%         goal_y = cand_y(indexes(1));
+%     end
+%     temp_board = board;
+%     temp_board(4-goal_y+1,goal_x) = 0;
+%     [so,no] = CS4300_Wumpus_A_star(abs(temp_board),...
+%         state,...
+%         [goal_x,goal_y,0],'CS4300_A_star_Man');
+%     if ~isempty(so)
+%         plan = [so(2:end,4)];
+%     else
+%         plan = randi(3);
+%     end
+%     action = plan(1);
+%     plan = plan(2:end);
+%     % Update agent's idea of state
+%     state = CS4300_Wumpus_transition(state,action,safe);
+%     visited(4-state(2)+1,state(1)) = 1;
+%     board(4-state(2)+1,state(1)) = 0;
+%     return
+% end
 
 end
 
