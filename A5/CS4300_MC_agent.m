@@ -158,6 +158,24 @@ end
 % Take a risk
 if isempty(plan)
     %%TODO%%
+    
+    [y,x] = find(visited == 0 & frontier_helper == 1);
+    min_index = [4,4];
+    min = 1;
+    
+    [pp,wp] = CS4300_WP_estimates();
+    estimate_averages = (pp + wp)/2;
+    
+    for i = 1:length(y)
+        if estimate_average(y(i),x(i)) < min
+            min_index = [y(i),x(i)];
+            min = estimate_average(y(i),x(i));
+        end
+    end
+    
+    
+    
+    
     %[cand_row,cand_col] = [0,0];
     cand_x = cand_col;
     cand_y = 4 - cand_row + 1;
