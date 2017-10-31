@@ -53,11 +53,16 @@ if isempty(state)
     plan = [];
 end
 
+if killed_wumpus == 0
+    stench(4-state(2)+1,state(1)) = percept(1);
+end
+breezes(4-state(2)+1,state(1)) = percept(2);
 if percept(5)==1
     [rW,cW] = find(Wumpus==1);
+    stench = -ones(4,4);
     board(rW,cW) = 0;
     safe(rW,cW) = 1;
-    Wumpus(rW,cW) = 0;
+    Wumpus = zeros(4,4);
     killed_wumpus = 1;
 end
 
@@ -75,7 +80,7 @@ if ~isempty(plan)
     action = plan(1);
     plan = plan(2:end);
     % Update agent's idea of state
-    state = CS4300_Wumpus_transition(state,action,board);
+    state = CS4300_Wumpus_transition(state,action,zeros(4,4));
     x = 4-state(2)+1; y = state(1);
     visited(x,y) = 1;
     neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
@@ -84,12 +89,11 @@ if ~isempty(plan)
         frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
     end
     board(x,y) = 0;
+    safe(x,y) = 1;
     return
 end
 
 %Do montecarlo stuff to guess which spots are safe
-stench(4-state(2)+1,state(1)) = percept(1);
-breezes(4-state(2)+1,state(1)) = percept(2);
 [pit_est,wumpus_est] = CS4300_WP_estimates(breezes,stench,num_trials);
 for i = 1:4
     for j = 1:4
@@ -101,23 +105,29 @@ for i = 1:4
            board(i,j) = 1;
         end
         if pit_est(i,j) == 1 || pit_est(i,j) == 0
-           pits(i,j) = pit_est(i,j); 
+           pits(i,j) = pit_est(i,j);
+           if killed_wumpus == 1 && pit_est(i,j) == 0
+              safe(i,j) = 1;
+              board(i,j) = 0;
+           elseif killed_wumpus == 1 && pit_est(i,j) == 1
+              safe(i,j) = 0;
+              board(i,j) = 1;
+           end
         end
-        if wumpus_est(i,j) == 1 || wumpus_est(i,j) == 0
-           Wumpus(i,j) = wumpus_est(i,j); 
+        if wumpus_est(i,j) == 1 || wumpus_est(i,j) == 0 &&...
+                killed_wumpus == 0
+           Wumpus(i,j) = wumpus_est(i,j);
         end
     end
 end
 
 [wumpus_x,wumpus_y] = find(Wumpus==1);
 if ~isempty(wumpus_x) && have_arrow
-    Wx = wumpus_x;
-    Wy = 4 - wumpus_y + 1;
-    plan = CS4300_Plan_Shot(abs(board), state, Wx, Wy);
+    plan = CS4300_Plan_Shot(abs(board), state, wumpus_x, wumpus_y);
     have_arrow = 0;
     action = plan(1);
     plan = plan(2:end);
-    state = CS4300_Wumpus_transition(state,action,board);
+    state = CS4300_Wumpus_transition(state,action,zeros(4,4));
     x = 4-state(2)+1; y = state(1);
     visited(x,y) = 1;
     neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
@@ -126,6 +136,7 @@ if ~isempty(wumpus_x) && have_arrow
         frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
     end
     board(x,y) = 0;
+    safe(x,y) = 1;
     return
 end
 
@@ -138,57 +149,50 @@ if isempty(plan)
         [so,no] = CS4300_Wumpus_A_star(abs(board),...
             state,...
             [cand_x(1),cand_y(1),0],'CS4300_A_star_Man');
-        plan = [so(2:end,4)];
-        action = plan(1);
-        plan = plan(2:end);
-        % Update agent's idea of state
-        state = CS4300_Wumpus_transition(state,action,board);
-        x = 4-state(2)+1; y = state(1);
-        visited(x,y) = 1;
-        neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
-        neighbors = min(max(neighbors,1),4);
-        for i = 1:4
-            frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
+        if ~isempty(so)
+            plan = [so(2:end,4)];
+            action = plan(1);
+            plan = plan(2:end);
+            % Update agent's idea of state
+            state = CS4300_Wumpus_transition(state,action,zeros(4,4));
+            x = 4-state(2)+1; y = state(1);
+            visited(x,y) = 1;
+            neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
+            neighbors = min(max(neighbors,1),4);
+            for i = 1:4
+                frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
+            end
+            board(x,y) = 0;
+            safe(x,y) = 1;
+            return
         end
-        board(x,y) = 0;
-        return
     end
 end
 
 % Take a risk
-if isempty(plan)
-    %%TODO%%
-    
+if isempty(plan) 
     [y,x] = find(visited == 0 & frontier_helper == 1);
     min_index = [4,4];
-    min = 1;
+    min_value = 1;
     
-    [pp,wp] = CS4300_WP_estimates();
-    estimate_averages = (pp + wp)/2;
+    estimate_averages = (pit_est + wumpus_est)/2;
     
     for i = 1:length(y)
-        if estimate_average(y(i),x(i)) < min
+        if estimate_averages(y(i),x(i)) < min_value
             min_index = [y(i),x(i)];
-            min = estimate_average(y(i),x(i));
+            min_value = estimate_averages(y(i),x(i));
         end
     end
     
-    
-    
-    
-    %[cand_row,cand_col] = [0,0];
-    cand_x = cand_col;
-    cand_y = 4 - cand_row + 1;
-    indexes = find(cand_x~=state(1)|cand_y~=state(2));
-    if ~isempty(indexes)
-        goal_x = cand_x(indexes(1));
-        goal_y = cand_y(indexes(1));
-    end
     temp_board = board;
-    temp_board(4-goal_y+1,goal_x) = 0;
-    [so,no] = CS4300_Wumpus_A_star(abs(temp_board),...
-        state,...
-        [goal_x,goal_y,0],'CS4300_A_star_Man');
+    goal_y = min_index(2);
+    goal_x = min_index(1);
+    temp_board(goal_x,goal_y) = 0;
+    
+    wumpus_y = 5 - goal_x;
+    wumpus_x = goal_y;
+    [so,no] = CS4300_Wumpus_A_star(abs(temp_board),state,...
+        [wumpus_x,wumpus_y,0],'CS4300_A_star_Man');
     if ~isempty(so)
         plan = [so(2:end,4)];
     else
@@ -197,7 +201,7 @@ if isempty(plan)
     action = plan(1);
     plan = plan(2:end);
     % Update agent's idea of state
-    state = CS4300_Wumpus_transition(state,action,board);
+    state = CS4300_Wumpus_transition(state,action,zeros(4,4));
     x = 4-state(2)+1; y = state(1);
     visited(x,y) = 1;
     neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
@@ -206,6 +210,7 @@ if isempty(plan)
         frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
     end
     board(x,y) = 0;
+    safe(x,y) = 1;
     return
 end
 
