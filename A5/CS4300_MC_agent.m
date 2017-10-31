@@ -38,6 +38,7 @@ if isempty(state)
     Wumpus = -ones(4,4);
     board = -ones(4,4);
     visited = zeros(4,4);
+    frontier_helper = zeros(4,4);
     safe(4,1) = 1;
     pits(4,1) = 0;
     Wumpus(4,1) = 0;
@@ -211,6 +212,7 @@ if isempty(plan)
         state = CS4300_Wumpus_transition(state,action,board);
         visited(4-state(2)+1,state(1)) = 1;
         board(4-state(2)+1,state(1)) = 0;
+        neighbors = [
         return
     end
 end
