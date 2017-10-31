@@ -48,9 +48,6 @@ score = 0;
 while step<max_steps&done==0
     step = step + 1;
     percept = CS4300_get_percept(board,agent,bumped,screamed);
-    if step == 29
-       x = 5; 
-    end
     action = feval(f_name,percept);
     if action==5
         score = score - 50;
