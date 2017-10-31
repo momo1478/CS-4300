@@ -173,9 +173,6 @@ if isempty(plan)
         end
     end
     
-    
-    
-    
     %[cand_row,cand_col] = [0,0];
     cand_x = cand_col;
     cand_y = 4 - cand_row + 1;
