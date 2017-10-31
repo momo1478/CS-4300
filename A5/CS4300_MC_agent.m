@@ -26,7 +26,7 @@ SHOOT = 5;
 CLIMB = 6;
 
 persistent safe pits Wumpus board have_gold have_arrow killed_wumpus
-persistent state visited plan stench breezes num_trials
+persistent state visited plan stench breezes num_trials frontier_helper
 
 if isempty(state)
     state = [1,1,0];
@@ -44,6 +44,9 @@ if isempty(state)
     Wumpus(4,1) = 0;
     board(4,1) = 0;
     visited(4,1) = 1;
+    frontier_helper(4,1) = 1;
+    frontier_helper(4,2) = 1;
+    frontier_helper(3,1) = 1;
     have_gold = 0;
     have_arrow = 1;
     killed_wumpus = 0;
@@ -73,8 +76,14 @@ if ~isempty(plan)
     plan = plan(2:end);
     % Update agent's idea of state
     state = CS4300_Wumpus_transition(state,action,board);
-    visited(4-state(2)+1,state(1)) = 1;
-    board(4-state(2)+1,state(1)) = 0;
+    x = 4-state(2)+1; y = state(1);
+    visited(x,y) = 1;
+    neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
+    neighbors = min(max(neighbors,1),4);
+    for i = 1:4
+        frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
+    end
+    board(x,y) = 0;
     return
 end
 
@@ -109,92 +118,16 @@ if ~isempty(wumpus_x) && have_arrow
     action = plan(1);
     plan = plan(2:end);
     state = CS4300_Wumpus_transition(state,action,board);
-    visited(4-state(2)+1,state(1)) = 1;
-    board(4-state(2)+1,state(1)) = 0;;
+    x = 4-state(2)+1; y = state(1);
+    visited(x,y) = 1;
+    neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
+    neighbors = min(max(neighbors,1),4);
+    for i = 1:4
+        frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
+    end
+    board(x,y) = 0;
     return
 end
-
-
-% No Wumpus shot yet
-% [rW,cW] = find(Wumpus==1);
-% if ~isempty(rW)
-%     r_kill = [];
-%     c_kill = [];
-%     [r_safe,c_safe] = find(safe==1);
-%     r_index = find(r_safe==rW);
-%     c_index = find(c_safe==cW);
-%     if ~isempty(r_index)
-%         r_kill = r_safe(r_index(1));
-%         c_kill = c_safe(r_index(1));
-%         x_kill = c_kill;
-%         y_kill = 4 - r_kill + 1;
-%         row_kill = 1;
-%         col_kill = 0;
-%     elseif ~isempty(c_index)
-%         r_kill = r_safe(c_index(1));
-%         c_kill = c_safe(c_index(1));
-%         x_kill = c_kill;
-%         y_kill = 4 - r_kill + 1;
-%         col_kill = 1;
-%         row_kill = 0;
-%     end
-%     if ~isempty(r_kill)
-%         if x_kill==state(1)&y_kill==state(2)
-%             final_dir = state(3);
-%         else
-%             [so,no] = CS4300_Wumpus_A_star(abs(board),...
-%                 state,...
-%                 [x_kill,y_kill,0],'CS4300_A_star_Man');
-%             plan = so(2:end,4);  % gets agent to right place
-%             final_dir = so(end,3);
-%         end
-%         if row_kill==1
-%             if cW>c_kill
-%                 if final_dir==1
-%                     plan = [plan;2];
-%                 elseif final_dir==2
-%                     plan = [plan;2;2];
-%                 elseif final_dir==3
-%                     plan = [plan;3];
-%                 end
-%             else
-%                 if final_dir==0
-%                     plan = [plan;2;2];
-%                 elseif final_dir==1
-%                     plan = [plan;3];
-%                 elseif final_dir==3
-%                     plan = [plan;2];
-%                 end
-%             end
-%         else
-%             if rW>r_kill
-%                 if final_dir==0
-%                     plan = [plan;3];
-%                 elseif final_dir==1
-%                     plan = [plan;2;2];
-%                 elseif final_dir==2
-%                     plan = [plan;3];
-%                 end
-%             else
-%                 if final_dir==0
-%                     plan = [plan;3];
-%                 elseif final_dir==2
-%                     plan = [plan;2];
-%                 elseif final_dir==3
-%                     plan = [plan;2;2];
-%                 end
-%             end
-%         end
-%         plan = [plan;5];
-%     end
-%     action = plan(1);
-%     plan = plan(2:end);
-%     % Update agent's idea of state
-%     state = CS4300_Wumpus_transition(state,action,board);
-%     visited(4-state(2)+1,state(1)) = 1;
-%     board(4-state(2)+1,state(1)) = 0;;
-%     return
-% end
 
 % travel to safe spot
 if isempty(plan)
@@ -210,42 +143,53 @@ if isempty(plan)
         plan = plan(2:end);
         % Update agent's idea of state
         state = CS4300_Wumpus_transition(state,action,board);
-        visited(4-state(2)+1,state(1)) = 1;
-        board(4-state(2)+1,state(1)) = 0;
-        neighbors = [
+        x = 4-state(2)+1; y = state(1);
+        visited(x,y) = 1;
+        neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
+        neighbors = min(max(neighbors,1),4);
+        for i = 1:4
+            frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
+        end
+        board(x,y) = 0;
         return
     end
 end
 
-% % Take a risk
-% if isempty(plan)
-%     %%TODO%%
-%     %[cand_row,cand_col] = [0,0];
-%     cand_x = cand_col;
-%     cand_y = 4 - cand_row + 1;
-%     indexes = find(cand_x~=state(1)|cand_y~=state(2));
-%     if ~isempty(indexes)
-%         goal_x = cand_x(indexes(1));
-%         goal_y = cand_y(indexes(1));
-%     end
-%     temp_board = board;
-%     temp_board(4-goal_y+1,goal_x) = 0;
-%     [so,no] = CS4300_Wumpus_A_star(abs(temp_board),...
-%         state,...
-%         [goal_x,goal_y,0],'CS4300_A_star_Man');
-%     if ~isempty(so)
-%         plan = [so(2:end,4)];
-%     else
-%         plan = randi(3);
-%     end
-%     action = plan(1);
-%     plan = plan(2:end);
-%     % Update agent's idea of state
-%     state = CS4300_Wumpus_transition(state,action,board);
-%     visited(4-state(2)+1,state(1)) = 1;
-%     board(4-state(2)+1,state(1)) = 0;
-%     return
-% end
+% Take a risk
+if isempty(plan)
+    %%TODO%%
+    %[cand_row,cand_col] = [0,0];
+    cand_x = cand_col;
+    cand_y = 4 - cand_row + 1;
+    indexes = find(cand_x~=state(1)|cand_y~=state(2));
+    if ~isempty(indexes)
+        goal_x = cand_x(indexes(1));
+        goal_y = cand_y(indexes(1));
+    end
+    temp_board = board;
+    temp_board(4-goal_y+1,goal_x) = 0;
+    [so,no] = CS4300_Wumpus_A_star(abs(temp_board),...
+        state,...
+        [goal_x,goal_y,0],'CS4300_A_star_Man');
+    if ~isempty(so)
+        plan = [so(2:end,4)];
+    else
+        plan = randi(3);
+    end
+    action = plan(1);
+    plan = plan(2:end);
+    % Update agent's idea of state
+    state = CS4300_Wumpus_transition(state,action,board);
+    x = 4-state(2)+1; y = state(1);
+    visited(x,y) = 1;
+    neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
+    neighbors = min(max(neighbors,1),4);
+    for i = 1:4
+        frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
+    end
+    board(x,y) = 0;
+    return
+end
 
 end
 
