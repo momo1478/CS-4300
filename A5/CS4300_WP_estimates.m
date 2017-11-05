@@ -39,7 +39,7 @@ pits = zeros(4,4);
 Wumpus = zeros(4,4);
 count = 0;
 
-for s = 1:num_trials
+for s = 1:100000
     board = CS4300_gen_board_no_GW(.2);
     if CS4300_board_ok(board, breezes, stench)
         count = count + 1;
@@ -53,6 +53,9 @@ for s = 1:num_trials
               end
            end
         end
+    end
+    if count == num_trials
+        break;
     end
 end
 
