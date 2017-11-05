@@ -32,7 +32,7 @@ if isempty(state)
     state = [1,1,0];
     stench = -ones(4,4);
     breezes = -ones(4,4);
-    num_trials = 10000;
+    num_trials = 50;
     safe = -ones(4,4);
     pits = -ones(4,4);
     Wumpus = -ones(4,4);
@@ -123,7 +123,9 @@ end
 
 [wumpus_x,wumpus_y] = find(Wumpus==1);
 if ~isempty(wumpus_x) && have_arrow
-    plan = CS4300_Plan_Shot(abs(board), state, wumpus_x, wumpus_y);
+    Wx = wumpus_y;
+    Wy = 4 - wumpus_x + 1;
+    plan = CS4300_Plan_Shot(abs(board), state, Wx, Wy);
     have_arrow = 0;
     action = plan(1);
     plan = plan(2:end);
@@ -175,7 +177,7 @@ if isempty(plan)
     min_index = [4,4];
     min_value = 1;
     
-    estimate_averages = (pit_est + wumpus_est)/2;
+    estimate_averages = max(pit_est, wumpus_est);
     
     for i = 1:length(y)
         if estimate_averages(y(i),x(i)) < min_value
@@ -196,7 +198,7 @@ if isempty(plan)
     if ~isempty(so)
         plan = [so(2:end,4)];
     else
-        plan = randi(3);
+        plan = randi(3); %happens on boards with unreachable gold
     end
     action = plan(1);
     plan = plan(2:end);
