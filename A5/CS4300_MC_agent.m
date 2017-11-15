@@ -32,7 +32,7 @@ if isempty(state)
     state = [1,1,0];
     stench = -ones(4,4);
     breezes = -ones(4,4);
-    num_trials = 50;
+    num_trials = 200;
     safe = -ones(4,4);
     pits = -ones(4,4);
     Wumpus = -ones(4,4);
@@ -126,20 +126,22 @@ if ~isempty(wumpus_x) && have_arrow
     Wx = wumpus_y;
     Wy = 4 - wumpus_x + 1;
     plan = CS4300_Plan_Shot(abs(board), state, Wx, Wy);
-    have_arrow = 0;
-    action = plan(1);
-    plan = plan(2:end);
-    state = CS4300_Wumpus_transition(state,action,zeros(4,4));
-    x = 4-state(2)+1; y = state(1);
-    visited(x,y) = 1;
-    neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
-    neighbors = min(max(neighbors,1),4);
-    for i = 1:4
-        frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
+    if ~isempty(plan)
+        have_arrow = 0;
+        action = plan(1);
+        plan = plan(2:end);
+        state = CS4300_Wumpus_transition(state,action,zeros(4,4));
+        x = 4-state(2)+1; y = state(1);
+        visited(x,y) = 1;
+        neighbors = [[x+1,y];[x-1,y];[x,y+1];[x,y-1]];
+        neighbors = min(max(neighbors,1),4);
+        for i = 1:4
+            frontier_helper(neighbors(i,1),neighbors(i,2)) = 1;
+        end
+        board(x,y) = 0;
+        safe(x,y) = 1;
+        return
     end
-    board(x,y) = 0;
-    safe(x,y) = 1;
-    return
 end
 
 % travel to safe spot

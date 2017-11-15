@@ -15,13 +15,15 @@ function plan = CS4300_Plan_Shot(safe_board, state, Wx, Wy )
 %   U1008121 and U0947296
 %   Fall 2017
 
+plan = [];
 S = CS4300_find_safe_row_col_with_Wumpus(safe_board,Wx,Wy);
-% S == [sx,sy,0]
 [so,no] = CS4300_Wumpus_A_star(abs(safe_board),...
     [state(1),state(2),state(3)],S,'CS4300_A_star_Man');
 turn = CS4300_turn_plan(S, so);
+if ~isempty(so)
+    plan = [so(2:end,end);turn;5];
+    plan = reshape(plan,[1,length(plan)]);
+end
 
-plan = [so(2:end,end);turn;5];
-plan = reshape(plan,[1,length(plan)]);
 end
 

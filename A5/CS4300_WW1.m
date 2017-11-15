@@ -33,6 +33,7 @@ agent.gold = 0;  % grabbed gold in same room
 agent.dir = 0;  % facing right
 agent.succeed = 0;  % has gold and climbed out
 agent.climbed = 0; % climbed out
+agent.screamed = 0;
 
 trace(1).board = board;
 trace(1).agent = agent;
@@ -42,6 +43,7 @@ step = 0;
 done = 0;
 bumped = 0;
 screamed = 0;
+found_screamed = 0;
 
 score = 0;
 
@@ -63,6 +65,10 @@ while step<max_steps&done==0
     trace(step+1).agent = agent;
     trace(step+1).board = board;
     trace(step+1).action = action;
+    if(screamed == 1)
+        found_screamed = 1;
+    end
+    trace(step+1).agent.screamed = found_screamed;
     if agent.alive==0|agent.succeed==1|agent.climbed==1
         done = 1;
     end
