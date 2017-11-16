@@ -1,3 +1,4 @@
+
 function trace = CS4300_WW2(max_steps,f_name)
 % CS4300_WW2 - Wumpus World 2 simulator
 % On input:
@@ -24,5 +25,5 @@ agent.dir = 0;  % facing right
 agent.succeed = 0;  % has gold and climbed out
 agent.climbed = 0; % climbed out
 
-board = [0,0,0,2; 0,0,0,0; 0,0,0,0; 0,0,0,0];
+board = [0,1,0,2; 1,0,0,0; 0,0,1,1; 0,0,0,0];
 [score,trace] = CS4300_WW1(max_steps,f_name,board);
