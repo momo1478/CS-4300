@@ -22,25 +22,23 @@ N = size(D,1);
 M = size(D,2);
 
 for i = 1:N
-   R(i,i).R = ones(M,M); 
-end
-
-for i = 1:N
    for j = 1:N
-       if(i~=j)
+       if i~=j
            for a = 1:M
               for b = 1:M
                   R(i,j).R(a,b) = feval(P,i, a, j, b);
               end
            end
+       else
+           R(i,j).R = eye(M,M);
        end
    end
 end
 
 for i = 1:N
    for a = 1:M
-      if(D(i,a) == 0)
-         R(i,i).R(a,a) = 0; 
+      if D(i,a) == 0
+         R(i,i).R(a,a) = 0;
       end
    end
 end
