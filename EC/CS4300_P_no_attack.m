@@ -1,5 +1,5 @@
-function p = CS6100_P_no_attack(i,a,j,b)
-% CS6100_P_no_attack - predicate for N-queens
+function p = CS4300_P_no_attack(i,a,j,b)
+% CS4300_P_no_attack - predicate for N-queens
 %    i and j are distinct rows; a and b are columns
 %    queens attack if thet are on the same column or diagonal
 % On input:
@@ -10,7 +10,7 @@ function p = CS6100_P_no_attack(i,a,j,b)
 % On output:
 %     p (Boolean): 1 if predicate true; else 0
 % Call:
-%     p = CS6100_P_no_attack(1,1,2,1);
+%     p = CS4300_P_no_attack(1,1,2,1);
 % Author:
 %     T. Henderson
 %     UU
@@ -18,6 +18,15 @@ function p = CS6100_P_no_attack(i,a,j,b)
 %
 
 p = 1;
+if i==j
+    if a~=b
+        p = 0;
+    else
+        p = 1;
+    end
+    return
+end
+
 if (a==b)||(abs(i-j)==abs(a-b))
     p = 0;
     return
