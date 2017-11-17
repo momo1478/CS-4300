@@ -6,8 +6,14 @@ function [S,A,R,P,U,Ut] = CS4300_run_value_iteration(gamma,max_iter)
 % On output:
 %     S (vector): states (1 to n)
 %     A (vector): actions (1 to k)
+%     R (vector): state rewards
+%     P (nxk struct array): transition model
+%       (s,a).probs (a vector with n transition probabilities
+%       (from s to s_prime, given action a)
+%     U (vector): state utilities
+%     Ut (iterxn): trace of utility values during iteration
 % Call:
-%     p = CS4300_MDP_policy(S,A,P,U);
+%     p = CS4300_MDP_policy(.99999, 1000);
 % Author:
 %    Eric Waugh and Monish Gupta
 %    u0947296 and u1008121
