@@ -39,19 +39,23 @@ eta,max_iter)
 %    u0947296 and u1008121
 %    Fall 2017
 
+count = 0;
 first_iter = 1;
 max_utility_change = 0;
 
 U = zeros(1,16);
 newU = zeros(1,16);
 
-U_trace = zeros(1,16);
+U_trace = [];
 
 n = size(S,1);
 k = size(A,1);
 
-while ~first_iter && max_utility_change < (1 - gamma)/gamma
+while first_iter ~= 1 && max_utility_change < eta*((1 - gamma)/gamma) && ...
+        count < max_iter
 max_utility_change = 0;
+
+U_trace = [U_trace;newU];
 U = newU;
 
 %for each state s in S do
@@ -60,6 +64,7 @@ for s = 1 : n
     
     tempNewUs = zeroes(1,n);
     tempNewUs(1:n) = newU(s);
+    
     bestUtil = -10000;
     for a = 1 : k
       bestUtil = max(bestUtil , max( times(P(s,a).probs ,tempNewUs) ) );
@@ -70,6 +75,7 @@ for s = 1 : n
 end
     
 first_iter = 0;
+count = count + 1;
 end
 
 end
