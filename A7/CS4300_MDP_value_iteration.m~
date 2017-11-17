@@ -64,14 +64,10 @@ for s = 1 : n
     for a = 1 : k
       bestUtil = max(bestUtil , max( times(P(s,a).probs ,tempNewUs) ) );
     end
-    newU(s) = R(s) + gamma * bestUtil;
-    
-    max_utility_change = max( max_utility_change, abs( newU(s) - U(s) ) );     
+   newU(s) = R(s) + gamma + bestUtil;
 end
     
 first_iter = 0;
-end
-
 end
     
 
