@@ -51,8 +51,8 @@ U_trace = [];
 n = size(S,1);
 k = size(A,1);
 
-while first_iter ~= 1 && max_utility_change < eta*((1 - gamma)/gamma) && ...
-        count < max_iter
+while first_iter ~= 1 && max_utility_change < eta*((1 - gamma)/gamma)...
+        && count < max_iter
 max_utility_change = 0;
 
 U_trace = [U_trace;newU];
@@ -60,8 +60,6 @@ U = newU;
 
 %for each state s in S do
 for s = 1 : n
-    max_utility_for_state = 0;
-    
     tempNewUs = zeroes(1,n);
     tempNewUs(1:n) = newU(s);
     
