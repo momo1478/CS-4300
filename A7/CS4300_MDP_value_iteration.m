@@ -75,7 +75,7 @@ for s = 1 : n
 end
     
 first_iter = 0;
-count++;
+count = count + 1;
 end
 
 end
