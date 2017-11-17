@@ -51,7 +51,7 @@ U_trace = [];
 n = size(S,1);
 k = size(A,1);
 
-while ~first_iter && max_utility_change < eta*((1 - gamma)/gamma) && ...
+while first_iter ~= 1 && max_utility_change < eta*((1 - gamma)/gamma) && ...
         count < max_iter
 max_utility_change = 0;
 
