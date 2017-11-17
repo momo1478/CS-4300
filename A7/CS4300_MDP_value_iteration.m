@@ -15,7 +15,7 @@ eta,max_iter)
 %     U (vector): state utilities
 %     U_trace (iterxn): trace of utility values during iteration
 % Call:
-%     [U,Ut] = Cs4300_MDP_value_iteration(S,A,P,R,0.999999,0.1,100);
+%     [U,Ut] = CS4300_MDP_value_iteration(S,A,P,R,0.999999,0.1,100);
 %
 %     Set up a driver function, CS_4300_run_value_iteration (see
 %     below), which sets up the Markov Decision Problem and calls this
@@ -39,6 +39,7 @@ eta,max_iter)
 %    u0947296 and u1008121
 %    Fall 2017
 
+count = 0;
 first_iter = 1;
 max_utility_change = 0;
 
@@ -50,7 +51,8 @@ U_trace = [];
 n = size(S,1);
 k = size(A,1);
 
-while ~first_iter && max_utility_change < (1 - gamma)/gamma
+while ~first_iter && max_utility_change < eta*((1 - gamma)/gamma) && ...
+        count < max_iter
 max_utility_change = 0;
 
 U_trace = [U_trace;newU];
@@ -73,10 +75,13 @@ for s = 1 : n
 end
     
 first_iter = 0;
+count++;
 end
 
 end
     
+
+
 
 
 
