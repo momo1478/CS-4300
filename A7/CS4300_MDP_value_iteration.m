@@ -40,40 +40,38 @@ eta,max_iter)
 %    Fall 2017
 
 count = 0;
-first_iter = 1;
-max_utility_change = 0;
+max_utility_change = -1;
 
 U = zeros(1,16);
 newU = zeros(1,16);
 
 U_trace = [];
 
-n = size(S,1);
-k = size(A,1);
+n = size(S,2);
+k = size(A,2);
 
-while first_iter ~= 1 && max_utility_change < eta*((1 - gamma)/gamma)...
-        && count < max_iter
-max_utility_change = 0;
+while max_utility_change < eta * ((1 - gamma)/gamma) && ...
+        count < max_iter
+    max_utility_change = 0;
 
-U_trace = [U_trace;newU];
-U = newU;
+    U_trace = [U_trace;newU];
+    U = newU;
 
-%for each state s in S do
-for s = 1 : n
-    tempNewUs = zeroes(1,n);
-    tempNewUs(1:n) = newU(s);
-    
-    bestUtil = -10000;
-    for a = 1 : k
-      bestUtil = max(bestUtil , max( times(P(s,a).probs ,tempNewUs) ) );
+    %for each state s in S do
+    for s = 1 : n
+        tempNewUs = zeros(1,n);
+        tempNewUs(1:n) = newU(s);
+
+        bestUtil = -10000;
+        for a = 1 : k
+          bestUtil = max(bestUtil , max( times(P(s,a).probs ,tempNewUs) ) );
+        end
+        newU(s) = R(s) + gamma * bestUtil;
+
+        max_utility_change = max( max_utility_change, abs( newU(s) - U(s) ) );     
     end
-    newU(s) = R(s) + gamma * bestUtil;
-    
-    max_utility_change = max( max_utility_change, abs( newU(s) - U(s) ) );     
-end
-    
-first_iter = 0;
-count = count + 1;
+
+    count = count + 1;
 end
 
 end
