@@ -76,9 +76,6 @@ while count < max_iter
           end
           bestUtil = max(bestUtil, currentUtil);
         end
-        if bestUtil ~= 0
-            x = 5;
-        end
         newU(s) = R(s) + (gamma * bestUtil);
 
         max_utility_change = max(max_utility_change, abs(newU(s) - U(s)));     
