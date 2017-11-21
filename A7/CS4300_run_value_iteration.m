@@ -13,7 +13,7 @@ function [S,A,R,P,U,Ut] = CS4300_run_value_iteration(gamma,max_iter)
 %     U (vector): state utilities
 %     Ut (iterxn): trace of utility values during iteration
 % Call:
-%     p = CS4300_MDP_policy(.99999, 1000);
+%     [S,A,R,P,U,Ut] = CS4300_run_value_iteration(.99999, 1000);
 % Author:
 %    Eric Waugh and Monish Gupta
 %    u0947296 and u1008121
@@ -28,7 +28,7 @@ A = 1:k;
 U = zeros(1,n);
 Ut = zeros(1,n);
 
-R = [0,0,-1,0, 0,0,-1,0, 0,0,-1,0, 0,0,0,1];
+R = [0,0,-1000,0, 0,0,-1000,0, 0,0,-1000,0, 0,0,0,1000];
 
 for i = 1:n
    for j = 1:k

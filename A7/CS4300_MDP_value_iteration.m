@@ -54,22 +54,23 @@ while max_utility_change < eta * ((1 - gamma)/gamma) && ...
         count < max_iter
     max_utility_change = 0;
 
-    U_trace = [U_trace;newU];
+    newU = R;
     U = newU;
 
     %for each state s in S do
-    for s = 1 : n
+    for s = 1:n
         tempNewUs = zeros(1,n);
         tempNewUs(1:n) = newU(s);
 
-        bestUtil = -10000;
-        for a = 1 : k
-          bestUtil = max(bestUtil , max( times(P(s,a).probs ,tempNewUs) ) );
+        bestUtil = -Inf;
+        for a = 1:k
+          bestUtil = max(bestUtil , max(times(P(s,a).probs, tempNewUs)));
         end
-        newU(s) = R(s) + gamma * bestUtil;
+        newU(s) = R(s) + (gamma * bestUtil);
 
-        max_utility_change = max( max_utility_change, abs( newU(s) - U(s) ) );     
+        max_utility_change = max(max_utility_change, abs(newU(s) - U(s)));     
     end
+    U_trace = [U_trace;U];
 
     count = count + 1;
 end
