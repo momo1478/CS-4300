@@ -67,7 +67,6 @@ while count < max_iter
     for s = 1:n
         bestUtil = -Inf;
         
-        
         for a = 1:k
           currentUtil = 0;
           possible_values = find(P(s,a).probs);
@@ -77,7 +76,7 @@ while count < max_iter
           end
           bestUtil = max(bestUtil, currentUtil);
         end
-        
+
         newU(s) = R(s) + (gamma * bestUtil);
 
         max_utility_change = max(max_utility_change, abs(newU(s) - U(s)));     
