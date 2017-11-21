@@ -50,8 +50,7 @@ U_trace = [];
 n = size(S,2);
 k = size(A,2);
 
-while max_utility_change < eta * ((1 - gamma)/gamma) && ...
-        count < max_iter
+while count < max_iter
     
     max_utility_change = 0;
     newU(3) = -1000;
@@ -62,13 +61,18 @@ while max_utility_change < eta * ((1 - gamma)/gamma) && ...
 
     %for each state s in S do
     for s = 1:n
-        tempNewUs = zeros(1,n);
-        tempNewUs(1:n) = U(s);
-
         bestUtil = -Inf;
+        
         for a = 1:k
-          bestUtil = max(bestUtil , max(times(P(s,a).probs, tempNewUs)));
+          currentUtil = 0;
+          possible_values = find(P(s,a).probs);
+          for i = 1:size(possible_values,2)
+            currentUtil = currentUtil...,
+              + (P(s,a).probs(possible_values(i)) * U(possible_values(i)));
+          end
+          bestUtil = max(bestUtil, currentUtil);
         end
+        
         newU(s) = R(s) + (gamma * bestUtil);
 
         max_utility_change = max(max_utility_change, abs(newU(s) - U(s)));     
@@ -76,6 +80,10 @@ while max_utility_change < eta * ((1 - gamma)/gamma) && ...
     
     U_trace = [U_trace;U];
     count = count + 1;
+    
+    if max_utility_change < eta * ((1 - gamma)/gamma)
+        break;
+    end
 end
 
 end
