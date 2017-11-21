@@ -28,28 +28,35 @@ A = 1:k;
 U = zeros(1,n);
 Ut = zeros(1,n);
 
-R = [-1,-1,-1000,-1,-1,0,-1000,-1, -1,-1,-1000,-1, -1,-1,-1,1000];
-
+%for every move the agent loses one score pit || wumpus = -1000 gold = 1000
+R = [-1,-1,-1000,-1,-1,-1,-1000,-1, -1,-1,-1000,-1, -1,-1,-1,1000];
+     %1  2      3  4  5  6     7  8   9 10    11             16 
 for i = 1:n
    for j = 1:k
       P(i,j).probs = zeros(1,n);
       if j == 1 %going up
          %checks bounds for going up
-         if i <= 12
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif i <= 12
              P(i,j).probs(i + 4) = P(i,j).probs(i + 4) + .8;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .8;
          end
          
          %checks bounds for going left
-         if rem(i,4) ~= 1
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif rem(i,4) ~= 1
              P(i,j).probs(i - 1) = P(i,j).probs(i - 1) + .1;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .1;
          end
          
          %checks bounds for going right
-         if rem(i,4) ~= 0
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif rem(i,4) ~= 0
              P(i,j).probs(i + 1) = P(i,j).probs(i + 1) + .1;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .1;
@@ -57,21 +64,27 @@ for i = 1:n
          
       elseif j == 2 %going left
          %checks bounds for going left
-         if rem(i,4) ~= 1
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif rem(i,4) ~= 1
              P(i,j).probs(i - 1) = P(i,j).probs(i - 1) + .8;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .8;
          end
          
          %checks bounds for going down
-         if i >= 5
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif i >= 5
              P(i,j).probs(i - 4) = P(i,j).probs(i - 4) + .1;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .1;
          end
          
          %checks bounds for going up
-         if i <= 12
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif i <= 12
              P(i,j).probs(i + 4) = P(i,j).probs(i + 4) + .1;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .1;
@@ -79,21 +92,27 @@ for i = 1:n
          
       elseif j == 3 %going down
          %checks bounds for going down
-         if i >= 5
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif i >= 5
              P(i,j).probs(i - 4) = P(i,j).probs(i - 4) + .8;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .8;
          end
          
          %checks bounds for going left
-         if rem(i,4) ~= 1
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif rem(i,4) ~= 1
              P(i,j).probs(i - 1) = P(i,j).probs(i - 1) + .1;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .1;
          end
          
          %checks bounds for going right
-         if rem(i,4) ~= 0
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif rem(i,4) ~= 0
              P(i,j).probs(i + 1) = P(i,j).probs(i + 1) + .1;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .1;
@@ -101,21 +120,27 @@ for i = 1:n
           
       elseif j == 4 %going right
          %checks bounds for going right
-         if rem(i,4) ~= 0
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif rem(i,4) ~= 0
              P(i,j).probs(i + 1) = P(i,j).probs(i + 1) + .8;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .8;
          end
          
          %checks bounds for going up
-         if i <= 12
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif i <= 12
              P(i,j).probs(i + 4) = P(i,j).probs(i + 4) + .1;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .1;
          end
          
          %checks bounds for going down
-         if i >= 5
+         if i == 3 || i == 7 || i == 11 || i == 16
+             P(i,j).probs(i) = 1;
+         elseif i >= 5
              P(i,j).probs(i - 4) = P(i,j).probs(i - 4) + .1;
          else
              P(i,j).probs(i) = P(i,j).probs(i) + .1;

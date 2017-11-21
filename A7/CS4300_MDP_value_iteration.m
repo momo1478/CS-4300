@@ -41,7 +41,7 @@ eta,max_iter)
 
 count = 0;
 max_utility_change = -1;
-n = 12;
+n = 16; %n = 16 for the wumpus world
 U = zeros(1,n);
 newU = R;
 
@@ -53,20 +53,20 @@ k = size(A,2);
 while count < max_iter
     
     max_utility_change = 0;
+    %for the wumpus world test
+    newU(3) = -1000;
+    newU(7) = -1000;
+    newU(11) = -1000;
+    newU(16) = 1000;
     
-%     newU(3) = -1000;
-%     newU(6) = -1000;
-%     newU(9) = -1000;
-%     newU(16) = 1000;
-    
-    newU(12) = 1;
-    newU(8) = -1;
+    %for the 3 by 4 board
+%     newU(12) = 1;
+%     newU(8) = -1;
     U = newU;
 
     %for each state s in S do
     for s = 1:n
         bestUtil = -Inf;
-        
         for a = 1:k
           currentUtil = 0;
           possible_values = find(P(s,a).probs);
@@ -76,7 +76,6 @@ while count < max_iter
           end
           bestUtil = max(bestUtil, currentUtil);
         end
-
         newU(s) = R(s) + (gamma * bestUtil);
 
         max_utility_change = max(max_utility_change, abs(newU(s) - U(s)));     
@@ -85,7 +84,6 @@ while count < max_iter
     U_trace = [U_trace;U];
     count = count + 1;
     
-
     if max_utility_change < (eta * (1 - gamma))/gamma
        break;
     end

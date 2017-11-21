@@ -11,6 +11,7 @@ function policy = CS4300_MDP_policy(S,A,P,U)
 % On output:
 %     policy (vector): actions per state
 % Call:
+%     [S,A,R,P,U,Ut] = CS4300_run_value_iteration(.99999, 1000);
 %     p = CS4300_MDP_policy(S,A,P,U);
 % Author:
 %    Eric Waugh and Monish Gupta
