@@ -54,10 +54,10 @@ while count < max_iter
     
     max_utility_change = 0;
     
-    %newU(3) = -1000;
-    %newU(6) = -1000;
-    %newU(9) = -1000;
-    %newU(16) = 1000;
+%     newU(3) = -1000;
+%     newU(6) = -1000;
+%     newU(9) = -1000;
+%     newU(16) = 1000;
     
     newU(12) = 1;
     newU(8) = -1;
@@ -66,6 +66,7 @@ while count < max_iter
     %for each state s in S do
     for s = 1:n
         bestUtil = -Inf;
+        
         
         for a = 1:k
           currentUtil = 0;
@@ -87,8 +88,7 @@ while count < max_iter
     
 
     if max_utility_change < (eta * (1 - gamma))/gamma
-       break; 
-
+       break;
     end
 end
 
