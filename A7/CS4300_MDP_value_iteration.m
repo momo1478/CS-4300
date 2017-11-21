@@ -54,10 +54,10 @@ while count < max_iter
     
     max_utility_change = 0;
     
-    %newU(3) = -1000;
-    %newU(6) = -1000;
-    %newU(9) = -1000;
-    %newU(16) = 1000;
+%     newU(3) = -1000;
+%     newU(6) = -1000;
+%     newU(9) = -1000;
+%     newU(16) = 1000;
     
     newU(12) = 1;
     newU(8) = -1;
@@ -76,6 +76,7 @@ while count < max_iter
           end
           bestUtil = max(bestUtil, currentUtil);
         end
+
         newU(s) = R(s) + (gamma * bestUtil);
 
         max_utility_change = max(max_utility_change, abs(newU(s) - U(s)));     
@@ -84,8 +85,9 @@ while count < max_iter
     U_trace = [U_trace;U];
     count = count + 1;
     
+
     if max_utility_change < (eta * (1 - gamma))/gamma
-       break; 
+       break;
     end
 end
 
