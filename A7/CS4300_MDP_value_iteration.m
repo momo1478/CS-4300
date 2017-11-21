@@ -43,7 +43,7 @@ count = 0;
 max_utility_change = -1;
 
 U = zeros(1,16);
-newU = zeros(1,16);
+newU = R;
 
 U_trace = [];
 
@@ -52,9 +52,12 @@ k = size(A,2);
 
 while max_utility_change < eta * ((1 - gamma)/gamma) && ...
         count < max_iter
+    
     max_utility_change = 0;
-
-    newU = R;
+    newU(3) = -1000;
+    newU(6) = -1000;
+    newU(9) = -1000;
+    newU(16) = 1000;
     U = newU;
 
     %for each state s in S do
@@ -70,8 +73,8 @@ while max_utility_change < eta * ((1 - gamma)/gamma) && ...
 
         max_utility_change = max(max_utility_change, abs(newU(s) - U(s)));     
     end
+    
     U_trace = [U_trace;U];
-
     count = count + 1;
 end
 
