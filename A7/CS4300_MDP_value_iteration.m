@@ -63,7 +63,7 @@ while max_utility_change < eta * ((1 - gamma)/gamma) && ...
     %for each state s in S do
     for s = 1:n
         tempNewUs = zeros(1,n);
-        tempNewUs(1:n) = newU(s);
+        tempNewUs(1:n) = U(s);
 
         bestUtil = -Inf;
         for a = 1:k

@@ -16,4 +16,4 @@ function policy = CS4300_MDP_policy(S,A,P,U)
 %    Eric Waugh and Monish Gupta
 %    u0947296 and u1008121
 %    Fall 2017
-%
+
