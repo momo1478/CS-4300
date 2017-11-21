@@ -62,12 +62,19 @@ while max_utility_change < eta * ((1 - gamma)/gamma) && ...
 
     %for each state s in S do
     for s = 1:n
-        tempNewUs = zeros(1,n);
-        tempNewUs(1:n) = newU(s);
-
         bestUtil = -Inf;
+        
         for a = 1:k
-          bestUtil = max(bestUtil , max(times(P(s,a).probs, tempNewUs)));
+          currentUtil = 0;
+          possible_values = find(P(s,a).probs);
+          for i = 1:size(possible_values,2)
+            currentUtil = currentUtil...,
+              + (P(s,a).probs(possible_values(i)) * U(possible_values(i)));
+          end
+          bestUtil = max(bestUtil, currentUtil);
+        end
+        if bestUtil ~= 0
+            x = 5;
         end
         newU(s) = R(s) + (gamma * bestUtil);
 
