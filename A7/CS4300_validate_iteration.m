@@ -1,4 +1,4 @@
-function [S,A,R,P,U,Ut] = CS4300_run_value_iteration(gamma,max_iter)
+function [S,A,R,P,U,Ut] = CS4300_validate_iteration(gamma,max_iter)
 %CS4300_run_value_iteration - runs the value iterator
 % On input:
 %     gamma (float): discount factor
@@ -13,7 +13,7 @@ function [S,A,R,P,U,Ut] = CS4300_run_value_iteration(gamma,max_iter)
 %     U (vector): state utilities
 %     Ut (iterxn): trace of utility values during iteration
 % Call:
-%     [S,A,R,P,U,Ut] = CS4300_run_value_iteration(.99999, 1000);
+%     [S,A,R,P,U,Ut] = CS4300_validate_iteration(.99999, 1000);
 % Author:
 %    Eric Waugh and Monish Gupta
 %    u0947296 and u1008121
