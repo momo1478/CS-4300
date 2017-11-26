@@ -45,3 +45,30 @@ function [policy,U,Ut] = CS4300_MDP_policy_iteration(S,A,P,R,k,gamma)
 %     u0947296 and u1008121
 %     Fall 2017
 %
+
+n = size(S,2);
+U = ones(1,n);
+policy = ones(1,n);
+count = 0;
+U_trace = [];
+
+unchanged = 0;
+
+while unchanged == 0 && count < k
+    count = count + 1;
+    unchanged = 1;
+    U = CS4300_Policy_Evaluation(policy, U, S, A, P, R);
+    
+    policy_new = CS4300_MDP_policy(S,A,P,U);
+    for s = 1:n
+        if policy_new(s) ~= policy(s)
+           policy(s) = policy_new(s);
+           unchanged = 0;
+        end
+    end
+    
+    U_trace = [U_trace;U];
+    
+end
+
+end

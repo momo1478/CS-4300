@@ -40,8 +40,7 @@ eta,max_iter)
 %    Fall 2017
 
 count = 0;
-max_utility_change = -1;
-n = 16; %n = 16 for the wumpus world
+n = 16; %n = 12 for the test world
 U = zeros(1,n);
 newU = R;
 
