@@ -129,7 +129,5 @@ for i = 1:n
    end
 end
 
-[U,Ut] = CS4300_MDP_value_iteration(S, A, P, R, gamma, .1, max_iter);
-
 end
 
