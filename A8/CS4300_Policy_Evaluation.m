@@ -1,4 +1,4 @@
-function [U] = CS4300_Policy_Evaluation(policy,U,S,A,P,R)
+function [U] = CS4300_Naive_PE(policy,U,S,A,P,R)
 %CS4300_Policy_Evaluation - Takes in current U and updates it
 % On input:
 %     policy (nx1 vector): policy for problem
@@ -20,34 +20,23 @@ function [U] = CS4300_Policy_Evaluation(policy,U,S,A,P,R)
 b = transpose(R);
 
 n = size(S,2);
-Au = zeros(n,n);
+Au = zeros(n,1);
 
 bad_spot = min(b);
 good_spot = max(b);
 
 for i = 1:n
    for j = 1:n
-       if i == 2 && j == 2
-          x = 5; 
-       end
        if b(i) == bad_spot || b(i) == good_spot
-           Au(i,i) = 1;
+           Au(i) = U;
            break;
-       elseif ~isempty(P(i,policy(i)).probs)
-           if P(i,policy(i)).probs(j) ~= 0
-               if i == j
-                   Au(i,j) = (U(j) * P(i,policy(i)).probs(j)) - 1;
-               else
-                   Au(i,j) = U(j) * P(i,policy(i)).probs(j);
-               end
-           end
        else
-           Au(i,i) = 1;
+           Au(i) = Au(i) + U(j) * P(i,policy(i)).probs(j);
        end
    end
 end
 
-U = Au \ b;
+U = Au;
 
 end
 
