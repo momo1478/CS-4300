@@ -24,7 +24,11 @@ b = reshape(-R,n,1);
 Au = zeros(n,n);
 
 for s = 1 : n
-   Au(s,:) = P(s,policy(s)).probs;
+   if ~isempty(P(s,policy(s)).probs)
+        Au(s,:) = P(s,policy(s)).probs;
+   else
+        Au(s,:) = zeros(1,n);
+   end
 end
 
 Au = gamma * Au;
