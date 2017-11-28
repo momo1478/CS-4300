@@ -20,7 +20,6 @@ function [U] = CS4300_Policy_Evaluation(policy,U,S,A,P,R)
 b = transpose(R);
 
 n = size(S,2);
-k = size(A,2);
 Au = zeros(n,n);
 
 bad_spot = min(b);
@@ -28,21 +27,22 @@ good_spot = max(b);
 
 for i = 1:n
    for j = 1:n
+       if i == 2 && j == 2
+          x = 5; 
+       end
        if b(i) == bad_spot || b(i) == good_spot
            Au(i,i) = 1;
            break;
-       elseif i == j
-           if ~isempty(P(i,policy(i)).probs)
-               Au(i,j) = (U(j) * P(i,policy(i)).probs(j)) - 1;
-           else
-              Au(i,i) = 1; 
+       elseif ~isempty(P(i,policy(i)).probs)
+           if P(i,policy(i)).probs(j) ~= 0
+               if i == j
+                   Au(i,j) = (U(j) * P(i,policy(i)).probs(j)) - 1;
+               else
+                   Au(i,j) = U(j) * P(i,policy(i)).probs(j);
+               end
            end
        else
-           if ~isempty(P(i,policy(i)).probs)
-               Au(i,j) = U(j) * P(i,policy(i)).probs(j);
-           else
-               Au(i,i) = 1;
-           end
+           Au(i,i) = 1;
        end
    end
 end

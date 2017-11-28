@@ -27,7 +27,7 @@ for s = 1 : length(S)
         findI = find( P(s,a).probs );
         add = 0;
         
-        for i = 1 : length(findI)
+        for i = 1:length(findI)
             add = add + (P(s,a).probs(findI(i)) * U(findI(i)));
         end
         

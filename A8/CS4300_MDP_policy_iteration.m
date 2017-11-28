@@ -47,7 +47,7 @@ function [policy,U,Ut] = CS4300_MDP_policy_iteration(S,A,P,R,k,gamma)
 %
 
 n = size(S,2);
-U = zeros(1,n);
+U = ones(1,n);
 policy = ones(1,n);
 count = 0;
 U_trace = [];
