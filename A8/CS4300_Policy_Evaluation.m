@@ -17,7 +17,7 @@ function [U] = CS4300_Policy_Evaluation(policy,U,S,A,P,R)
 %     Fall 2017
 %
 
-b = reshape(R,[size(R,2),1]);
+b = transpose(R);
 
 n = size(S,2);
 k = size(A,2);
