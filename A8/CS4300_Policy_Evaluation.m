@@ -27,9 +27,6 @@ good_spot = max(b);
 
 for i = 1:n
    for j = 1:n
-       if i == 2 && j == 2
-          x = 5; 
-       end
        if b(i) == bad_spot || b(i) == good_spot
            Au(i,i) = 1;
            break;
