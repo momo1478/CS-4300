@@ -19,47 +19,17 @@ function [U] = CS4300_Policy_Evaluation(U,S,A,P,R,policy,k,gamma)
 %     Fall 2017
 %
 
-b = transpose(R);
-
 n = size(S,2);
+b = reshape(-R,n,1);
+Au = zeros(n,n);
 
-for i = 1:k
-   for j = 1:n
-       EU = 0;
-       if ~isempty(P(j,policy(j)).probs)
-           for l = 1:n
-              EU = EU + P(j,policy(j)).probs(l);
-           end
-       end
-       U(j) = R(j) + gamma * EU;
-   end
+for s = 1 : n
+   Au(s,:) = P(s,policy(s)).probs;
 end
 
-% Au = zeros(n,n);
-% 
-% bad_spot = min(b);
-% good_spot = max(b);
-% 
-% for i = 1:n
-%    for j = 1:n
-%        if b(i) == bad_spot || b(i) == good_spot
-%            Au(i,i) = 1;
-%            break;
-%        elseif ~isempty(P(i,policy(i)).probs)
-%            if P(i,policy(i)).probs(j) ~= 0
-%                if i == j
-%                    Au(i,j) = (U(j) * P(i,policy(i)).probs(j)) - 1;
-%                else
-%                    Au(i,j) = U(j) * P(i,policy(i)).probs(j);
-%                end
-%            end
-%        else
-%            Au(i,i) = 1;
-%        end
-%    end
-% end
-% 
-% U = Au \ b;
+Au = gamma * Au;
+Au = Au - eye(n,n);
+U = Au \ b;
 
 end
 
