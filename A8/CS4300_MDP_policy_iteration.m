@@ -54,10 +54,9 @@ U_trace = [];
 
 unchanged = 0;
 
-while unchanged == 0 && count < k
-    count = count + 1;
+while unchanged == 0
     unchanged = 1;
-    U = CS4300_Policy_Evaluation(policy, U, S, A, P, R);
+    U = CS4300_Policy_Evaluation(U,S,A,P,R,policy,k,gamma);
     
     policy_new = CS4300_MDP_policy(S,A,P,U);
     for s = 1:n
