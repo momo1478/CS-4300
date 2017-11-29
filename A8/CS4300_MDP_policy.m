@@ -21,10 +21,10 @@ function policy = CS4300_MDP_policy(S,A,P,U)
 policy = zeros(1,length(S));
 
 for s = 1 : length(S)
-    bestAction = 0;
+    bestAction = 1;
     bestSum = -Inf;
-    for a = 1 : length(A)
-        findI = find( P(s,a).probs );
+    for a = 1:length(A)
+        findI = find(P(s,a).probs);
         add = 0;
         
         for i = 1:length(findI)

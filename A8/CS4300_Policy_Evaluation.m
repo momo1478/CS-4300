@@ -20,10 +20,10 @@ function [U] = CS4300_Policy_Evaluation(U,S,A,P,R,policy,k,gamma)
 %
 
 n = size(S,2);
-b = reshape(-R,n,1);
+b = reshape(R,n,1);
 Au = zeros(n,n);
 
-for s = 1 : n
+for s = 1:n
    if ~isempty(P(s,policy(s)).probs)
         Au(s,:) = P(s,policy(s)).probs;
    else
@@ -33,6 +33,11 @@ end
 
 Au = gamma * Au;
 Au = Au - eye(n,n);
+for i = 1:n
+    if Au(i,i) == -1
+       Au(i,i) = 1;
+    end
+end
 
 U = Au \ b;
 
