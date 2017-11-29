@@ -21,34 +21,37 @@ function [U] = CS4300_Policy_Evaluation(U,S,A,P,R,policy,k,gamma)
 
 n = size(S,2);
 
-b = transpose(R);%reshape(-R,n,1);
-Au = zeros(n,n);
-
-for s = 1 : n
-   if ~isempty(P(s,policy(s)).probs)
-        Au(s,:) = P(s,policy(s)).probs;
-   else
-        Au(s,:) = zeros(n,1);
-   end
-end
-
-Au = gamma * Au;
-Au = Au - eye(n,n);
-U = Au \ b;
-
-% Up = U;
+% b = transpose(-R);%reshape(-R,n,1);
+% Au = zeros(n,n);
 % 
-% for loop = 1:k
-%     for s = 1 : n
-%     EU = 0;
-%         for a = 1 : n
-%             if ~isempty(P(s,policy(s)).probs)
-%                 EU = EU + P(s,policy(s)).probs(a) * Up(a);
-%             end
-%         end
-%     Up(s) = R(s) + gamma * EU;    
-%     end
+% for s = 1 : n
+%    if ~isempty(P(s,policy(s)).probs)
+%         Au(s,:) = P(s,policy(s)).probs;
+%    else
+%         Au(s,:) = zeros(n,1);
+%    end
 % end
 % 
-% U = Up;
+% Au = gamma * Au;
+% Au = Au - eye(n,n);
+% U = Au \ b;
 
+mnR = min(R);
+mxR = max(R);
+for loop = 1:k
+    for s = 1 : n
+    if R(s) == mnR || R(s) == mxR
+        U(s) = R(s);
+        continue;
+    end
+    EU = 0;
+        for a = 1 : n
+          if ~isempty(P(s,policy(s)).probs)
+             EU = EU + P(s,policy(s)).probs(a) * U(a);
+          end
+        end
+        if ~isempty(P(s,policy(s)).probs)
+            U(s) = R(s) + (gamma * EU);
+        end
+    end
+end

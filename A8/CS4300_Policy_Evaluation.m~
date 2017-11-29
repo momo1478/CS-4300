@@ -21,7 +21,7 @@ function [U] = CS4300_Policy_Evaluation(U,S,A,P,R,policy,k,gamma)
 
 n = size(S,2);
 
-% b = reshape(-R,n,1);
+% b = transpose(-R);%reshape(-R,n,1);
 % Au = zeros(n,n);
 % 
 % for s = 1 : n
@@ -36,15 +36,19 @@ n = size(S,2);
 % Au = Au - eye(n,n);
 % U = Au \ b;
 
-Up = zeros(1,n);
-
+mnR = min(R);
+mxR = max(R);
 for loop = 1:k
     for s = 1 : n
     EU = 0;
         for a = 1 : n
-            EU = EU + P(s,pol(s)).probs(a) * Up(a);
+          if ~isempty(P(s,policy(s)).probs)
+             EU = EU + P(s,policy(s)).probs(a) * U(a);
+          end
         end
-    Up(s) = R(s) + gamma * EU;    
+    if R(s) ~= mnR && R(s) ~= mxR
+    if R(s) ~= mnR && R(s) ~= mxR && ~isempty(P(s,policy(s)).probs)
+        U(s) = R(s) + (gamma * EU);
+    end
     end
 end
-
