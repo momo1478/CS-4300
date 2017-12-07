@@ -50,7 +50,6 @@ n = size(S,2);
 U = zeros(1,n);
 policy = ones(1,n);
 Ut = [];
-
 unchanged = 0;
 
 while unchanged == 0
