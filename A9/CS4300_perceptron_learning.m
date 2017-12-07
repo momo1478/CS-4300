@@ -23,4 +23,23 @@ n = size(X,1);
 m = size(X,2);
 
 X = [ones(n,1), X];
+x = 1;
 iter = 0;
+
+done = 0;
+pcorrect = 0;
+
+while ~done
+   if rate
+       alpha = 1000/(1000+iter);
+   end
+   
+   if pcorrect == 1 || iter < max_iter
+        done = 1;
+   end
+   
+   randrow = ceil(rand * size(m,1));
+   x = m(randrow,:);
+   
+   iter = iter + 1;
+end
