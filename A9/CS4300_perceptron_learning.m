@@ -19,3 +19,8 @@ function [w,per_cor] = ...
 %     U0947296 and U1008121
 %     Fall 2017
 
+n = size(X,1);
+m = size(X,2);
+
+X = [ones(n,1), X];
+iter = 0;
