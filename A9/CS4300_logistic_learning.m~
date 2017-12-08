@@ -48,8 +48,7 @@ while ~done
    
    per_cor = [per_cor,pcorrect];
    Se = [Se,sqerror];
-   
-   if (sqerror == 0 || iter >= max_iter)
+   if (pcorrect == 1 || iter >= max_iter)
         done = 1;
         break;
    end
