@@ -34,11 +34,10 @@ while ~done
    if rate
        alpha = 1000/(1000+iter);
    end
-   for j = 1 : n
-        hw(j) = (dot(X(j,:),w) >= 0); 
-   end
+   for j = 
+   hw = (dot(X(i,:),w) >= 0); 
    
-   pcorrect = sum( transpose(hw) == y ) / size(y,1);
+   pcorrect = sum( hw == y ) / size(y,1);
    per_cor = [per_cor,pcorrect];
    if (pcorrect == 1 || iter >= max_iter)
         done = 1;
