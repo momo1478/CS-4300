@@ -21,7 +21,6 @@ function [w,per_cor,Se] = ...
 %     Fall 2017
 %
 
-y = transpose(y);
 
 n = size(X,1);
 m = size(X,2);
@@ -42,19 +41,17 @@ while ~done
    end
    for j = 1 : n
         hw(j) = 1 / (1 + exp(-dot(w,X(j,:)))) ;
-        %pcorrect = pcorrect + ( dot(w,X(j,:) >= 0) == y(j) );
+        pcorrect = sum( ( dot(w,X(j,:) >= 0) == y ) ) / size(y,1);
    end
+   pcorrect = per_cor = sum((X*w>=0)==y)/n
    
-   %pcorrect = pcorrect / size(y,1);
-   pcorrect = sum((w*X'>=0)==y)/n;
+   sqerror = sum((transpose(hw) - y).^2)/size(y,1);
+   
    per_cor = [per_cor,pcorrect];
-   
-   sqerror = (sum(hw - y).^2)/size(y,1);
    Se = [Se,sqerror];
    
    if (sqerror == 0 || iter >= max_iter)
         done = 1;
-        w = w';
         break;
    end
    
