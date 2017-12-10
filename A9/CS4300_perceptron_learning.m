@@ -19,6 +19,8 @@ function [w,per_cor] = ...
 %     U0947296 and U1008121
 %     Fall 2017
 
+y = transpose(y);
+
 n = size(X,1);
 m = size(X,2);
 
@@ -38,7 +40,7 @@ while ~done
         hw(j) = (dot(X(j,:),w) >= 0); 
    end
    
-   pcorrect = sum( transpose(hw) == y ) / size(y,1);
+   pcorrect = sum( hw == y ) / size(y,1);
    per_cor = [per_cor,pcorrect];
    if (pcorrect == 1 || iter >= max_iter)
         done = 1;
@@ -55,5 +57,4 @@ while ~done
    
    iter = iter + 1;
 end
-w = w';
 end
