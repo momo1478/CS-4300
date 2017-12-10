@@ -21,6 +21,7 @@ function [w,per_cor,Se] = ...
 %     Fall 2017
 %
 
+y = transpose(y);
 
 n = size(X,1);
 m = size(X,2);
@@ -46,7 +47,7 @@ while ~done
    
    pcorrect = pcorrect / size(y,1);
    
-   sqerror = sum((transpose(hw) - y).^2)/size(y,1);
+   sqerror = (sum(hw - y).^2)/size(y,1);
    
    per_cor = [per_cor,pcorrect];
    Se = [Se,sqerror];
