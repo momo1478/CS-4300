@@ -53,6 +53,7 @@ while ~done
    
    if (sqerror == 0 || iter >= max_iter)
         done = 1;
+        w = w';
         break;
    end
    

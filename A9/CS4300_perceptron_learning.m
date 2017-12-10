@@ -42,6 +42,7 @@ while ~done
    per_cor = [per_cor,pcorrect];
    if (pcorrect == 1 || iter >= max_iter)
         done = 1;
+        w = w';
         break;
    end
    
@@ -54,5 +55,5 @@ while ~done
    
    iter = iter + 1;
 end
-
+w = w';
 end

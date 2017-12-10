@@ -1,7 +1,11 @@
-function CS4300_A9_driver
+function [w,per_cor,class] = CS4300_A9_driver
 % CS4300_A9_driver - driver for A9 images
+% On output:
+%     w ((m+1)x1 vector): weights for linear function
+%     per_cor (kx1 array): trace of percentage correct with weight
+%     class ((m+1)x1 vector): which images satisfy the searched conditions
 % Call:
-%     CS4300_A9_driver
+%     [w,per_cor,class] = CS4300_A9_driver;
 % Author:
 %     Eric Waugh and Monish Gupta
 %     U0947296 and U1008121
@@ -46,8 +50,8 @@ for i = 1:size
 end
 y = transpose(y);
 
-[w,pc] = CS4300_perceptron_learning(Xim,(y==3)',0.1,1000,0);
+[w,per_cor] = CS4300_perceptron_learning(Xim,(y==3)',0.1,1000,0);
 
-class = [ones(27,1),Xim] * w' > 0;
+class = [ones(27,1),Xim] * w > 0;
 end
 
