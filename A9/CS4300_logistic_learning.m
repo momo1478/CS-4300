@@ -40,10 +40,12 @@ while ~done
        alpha = 1000/(1000+iter);
    end
    for j = 1 : n
-        hw(j) = 1 / (1 + exp(-dot(w,X(j,:)))) ; 
+        hw(j) = 1 / (1 + exp(-dot(w,X(j,:)))) ;
+        pcorrect = pcorrect + ( dot(w,X(j,:) >= 0) == y(j) );
    end
    
-   pcorrect = sum( transpose(hw) == y ) / size(y,1);
+   pcorrect = pcorrect / size(y,1);
+   
    sqerror = sum((transpose(hw) - y).^2)/size(y,1);
    
    per_cor = [per_cor,pcorrect];

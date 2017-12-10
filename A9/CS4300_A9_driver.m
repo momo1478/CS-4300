@@ -18,6 +18,7 @@ Xim = [];
 y = [];
 class = [];
 
+% Gold
 for i = 1:size
    im = G(i).im;
    im = imresize(im,[15,15]);
@@ -26,6 +27,7 @@ for i = 1:size
    y(i) = 1;
 end
 
+% Wumpus
 for i = 1:size
    im = W(i).im;
    im = imresize(im,[15,15]);
@@ -34,6 +36,7 @@ for i = 1:size
    y(i + 9) = 2;
 end
 
+% Pits
 for i = 1:size
    im = P(i,1).im;
    im = imresize(im,[15,15]);
@@ -41,6 +44,7 @@ for i = 1:size
    Xim(i + 18,:) = im(:,8)';
    y(i + 18) = 3;
 end
+y = transpose(y);
 
 [w,pc] = CS4300_perceptron_learning(Xim,(y==3)',0.1,1000,0);
 
