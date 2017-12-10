@@ -50,7 +50,7 @@ for i = 1:size
 end
 y = transpose(y);
 
-[w,per_cor] = CS4300_perceptron_learning(Xim,(y==3)',0.1,1000,0);
+[w,per_cor] = CS4300_perceptron_learning(Xim,(y==1)',0.1,1000,0);
 
 class = [ones(27,1),Xim] * w > 0;
 end
